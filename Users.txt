@@ -1,0 +1,6 @@
+admin0 admin0 Antanas Antanaitis email@gmail.com
+admin1 admin1 Petras Petraitis email@gmail.com
+admin2 admin2 Jonas Jonaitis email@gmail.com
+admin3 admin3 Zmogus Voras email@gmail.com
+admin4 admin4 Projekto Vadovas email@gmail.com
+admin5 admin5 Simonas Dauktantas email@gmail.com
