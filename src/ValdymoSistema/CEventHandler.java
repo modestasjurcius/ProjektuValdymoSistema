@@ -10,10 +10,8 @@ import ProjectData.CTask;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
+import org.json.simple.parser.ParseException;
 
 public class CEventHandler
 {
@@ -56,7 +54,7 @@ public class CEventHandler
     ///-------- Event handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
-    public void mainEvent()
+    public void mainEvent() throws IOException, FileNotFoundException, ParseException
     {
         print("\n-- Iveskite norima funkcija : ");
         String input = getInput();
@@ -78,7 +76,7 @@ public class CEventHandler
     }
     
     
-    public int handleEvent(int eventId)
+    public int handleEvent(int eventId) throws IOException, FileNotFoundException, ParseException
     {
         int code = 0;
         
@@ -90,11 +88,20 @@ public class CEventHandler
             case 2: createTask(); 
                 break;
                 
-            case 3: updateTask();
+            case 3: removeTask();
                 break;
                 
-            case 4: printAllTasksInfo();
-            default: break;
+            case 4: updateTask();
+                break;
+                
+            case 5: printAllTasksInfo();
+                break;
+                
+            case 6: importProject();
+                break;
+            
+            default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
+                break;
         }
         
         return code;
@@ -134,6 +141,33 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Task handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
+    private void removeTask()
+    {
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        if(this.workingProject.getTaskCount() == 0)
+        {
+            print("-- Nera uzduociu pasirinktame projekte!\n");
+            return;
+        }
+        
+        print("\n--Iveskite uzduoties pavadinima : ");
+        String input = getInput();
+        
+        if(this.workingProject.removeTask(input))
+        {
+            print("\n-- Uzduotis pavadinimu : " + input + " sekmingai panaikinta!");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, input);
+        }
+    }
     
     private void updateTask()
     {
@@ -365,6 +399,30 @@ public class CEventHandler
         print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
         
         return true;
+    }
+    
+    private void importProject() throws IOException, FileNotFoundException, ParseException
+    {
+        print("\n-- Iveskite failo pavadinima : ");
+        String input = getInput();
+        
+        if(!input.endsWith(".json"))
+        {
+           input += ".json"; 
+        }
+        
+        CProject project = new CProject();
+        
+        if(project.importData(input))
+        {
+            this.workingProject = project;
+
+            print("\n Projektas sekmingai importuotas !\n");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_UNKNOWN);
+        }
     }
     
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<

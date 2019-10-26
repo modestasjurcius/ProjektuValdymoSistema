@@ -5,8 +5,16 @@
 package ProjectData;
 
 import UserData.CUser;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import java.util.*; 
+import javafx.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 public class CProject
 {
@@ -77,5 +85,102 @@ public class CProject
     public ArrayList<CTask> getAllTasks()
     {
         return this.projectTasks;
+    }
+    
+    public boolean removeTask(String name)
+    {
+        CTask task = getTaskByName(name);
+        
+        if(task == null || !this.projectTasks.contains(task))
+        {
+           return false; 
+        }
+        
+        checkDependencies(task);
+        
+        this.projectTasks.remove(task);
+        return true;
+    }
+    
+    public void checkDependencies(CTask task)
+    {
+        if(task.hasParentTask())
+        {
+            CTask parentTask = task.getParentTask();
+            ArrayList parentsChildren = parentTask.getChildTasks();
+            parentsChildren.remove(task);
+        }
+        
+        for(Object obj : task.getChildTasks())
+        {
+            CTask childTask = (CTask) obj;
+            childTask.setParentTask(null);
+        }
+    }
+    
+    public boolean importData(String file) throws FileNotFoundException, IOException, ParseException
+    {
+        try
+        {
+            FileReader reader = new FileReader(file);
+
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonData = (JSONObject) jsonParser.parse(reader);
+
+            if (jsonData.isEmpty())
+            {
+                return false;
+            }
+
+            this.projectName = (String) jsonData.get("Name");
+
+            JSONArray tasks = (JSONArray) jsonData.get("Tasks");
+            
+            ArrayList parentToChildDependencies = new ArrayList();
+
+            if (!tasks.isEmpty())
+            {
+                for(Object obj : tasks)
+                {
+                    JSONObject data = (JSONObject) obj;
+                    CTask task = new CTask();
+                    
+                    task.parse(data, parentToChildDependencies);
+                    
+                    this.projectTasks.add(task);
+                }
+            }
+            
+            if(!parentToChildDependencies.isEmpty())
+            {
+                for(Object obj : parentToChildDependencies)
+                {
+                    Pair<String, String> dependency = (Pair)obj;
+                    registerTaskDependency(dependency.getKey(), dependency.getValue());
+                }
+            }
+            
+        } catch (FileNotFoundException e) {
+            return false;
+        } catch (IOException | ParseException e) {
+            return false;
+        }
+        
+        
+        return true;
+    }
+    
+    private void registerTaskDependency(String parent, String child)
+    {
+        CTask parentTask = getTaskByName(parent);
+        CTask childTask = getTaskByName(child);
+        
+        if(parentTask == null || childTask == null)
+        {
+            return;
+        }
+        
+        childTask.setParentTask(parentTask);
+        parentTask.addChildTask(childTask);
     }
 }

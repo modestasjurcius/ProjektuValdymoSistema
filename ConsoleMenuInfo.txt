@@ -7,5 +7,7 @@
 
 *-1--Sukurti Projekta-------------------------------*
 *-2--Sukurti Uzduoti--------------------------------*
-*-3--Perziureti Uzduoti-----------------------------*
-*-4--Spausdinti visu projekto uzduociu informacija--*
+*-3--Panaikinti Uzduoti-----------------------------*
+*-4--Perziureti Uzduoti-----------------------------*
+*-5--Spausdinti visu projekto uzduociu informacija--*
+*-6--Importuoti projekta i sistema------------------*
