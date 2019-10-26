@@ -86,15 +86,20 @@ public class CTask
         this.taskInfo.completeLevel = level;
     }
     
+    public ArrayList<CComment> getComments()
+    {
+        return this.comments;
+    }
+    
     //=======================================
     
-    public String generateTaskInfo()
+    public String generateTaskInfoOutput()
     {
         String out = "";
         
-        out += "~~Pavadinimas : " + this.taskInfo.name + "\n";
+        out += "\n~~Pavadinimas : " + this.taskInfo.name + "\n";
         out += "~~ID numeris : "+ this.taskInfo.idNumber + "\n";
-        out += "~~Uzbaigtumo lygis : " + this.taskInfo.completeLevel + "\n";
+        out += "~~Uzbaigtumo lygis : " + this.taskInfo.completeLevel + " %\n";
         out += "~~Tevine uzduotis : ";
         
         if(hasParentTask())
@@ -113,16 +118,41 @@ public class CTask
         {
             for(int i = 0; i < childTasksCount; i++)
             {
+                if(i > 0)
+                {
+                    out += ", ";
+                }
+                
                 CTask childTask = (CTask) this.childTasks.get(i);
                 out += childTask.getTaskName();
             }
         }
         else
         {
-            out += "Nera\n";
+            out += "Nera";
         }
         
-        out += "~~Aprasymas : \n" + this.taskInfo.taskDescription + "\n";
+        out += "\n~~Aprasymas : " + this.taskInfo.taskDescription + "\n";
+        out += "~~Komentarai : ";
+        
+        if(this.comments.isEmpty())
+        {
+            out += "Nera\n";
+        }
+        else
+        {
+            out += "\n";
+            
+            for (Object obj : this.comments)
+            {
+                CComment com = (CComment) obj;
+                out += com.generateCommentOutput();
+            }
+        }
+        
+        
+        out += "\n";
+        
         return out;
     }
 }
