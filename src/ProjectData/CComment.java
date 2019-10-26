@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 
 public class CComment
@@ -29,8 +31,13 @@ public class CComment
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateString = formatter.format(this.dateOfComment); 
     }
+
+    CComment()
+    {
+        this.attachedFilesPaths = new ArrayList();
+    }
     
-    public void editComment(String newComment)
+    public void setComment(String newComment)
     {
         this.comment = newComment;
     }
@@ -50,6 +57,18 @@ public class CComment
             return true;
         }
         return false;
+    }
+    
+    public void setDate(Date date)
+    {
+        if(this.dateOfComment == null)
+        {
+            this.dateOfComment = new Date();
+        }
+        this.dateOfComment = date;
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        this.dateString = formatter.format(this.dateOfComment); 
     }
     
     public String generateCommentOutput()
@@ -75,5 +94,28 @@ public class CComment
         }
         
         return out;
+    }
+    
+    public void parse(JSONObject data)
+    {     
+        try
+        {
+            this.comment = (String) data.get("Comment");
+            setDate(new Date((long) data.get("Date")));
+
+            JSONArray attachedFiles = (JSONArray) data.get("AttachedFiles");
+
+            if (attachedFiles != null && !attachedFiles.isEmpty())
+            {
+                for (Object obj : attachedFiles)
+                {
+                    this.attachedFilesPaths.add((String) obj);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 }
