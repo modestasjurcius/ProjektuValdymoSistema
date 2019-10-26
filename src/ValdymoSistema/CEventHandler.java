@@ -86,10 +86,14 @@ public class CEventHandler
             case 2: createTask(); 
                 break;
                 
-            case 3: updateTask();
+            case 3: removeTask();
                 break;
                 
-            case 4: printAllTasksInfo();
+            case 4: updateTask();
+                break;
+                
+            case 5: printAllTasksInfo();
+                break;
             
             default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
                 break;
@@ -132,6 +136,33 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Task handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
+    private void removeTask()
+    {
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        if(this.workingProject.getTaskCount() == 0)
+        {
+            print("-- Nera uzduociu pasirinktame projekte!\n");
+            return;
+        }
+        
+        print("\n--Iveskite uzduoties pavadinima : ");
+        String input = getInput();
+        
+        if(this.workingProject.removeTask(input))
+        {
+            print("\n-- Uzduotis pavadinimu : " + input + " sekmingai panaikinta!");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, input);
+        }
+    }
     
     private void updateTask()
     {
