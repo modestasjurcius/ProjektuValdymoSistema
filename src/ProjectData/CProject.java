@@ -73,4 +73,9 @@ public class CProject
         }
         return null;
     }
+    
+    public ArrayList<CTask> getAllTasks()
+    {
+        return this.projectTasks;
+    }
 }
