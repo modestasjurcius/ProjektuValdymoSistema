@@ -7,13 +7,10 @@
             "ID": 0,
             "Description": "Aprasymas uzduoties pavadinimu Uzduotis1",
             "ParentTask": "Tevine",
-            "ChildTasks": [
-                "Vaikine"
-            ],
             "Comments": [
                 {
                     "Comment": "Komentaras trumpas",
-                    "Date": 1598754354,
+                    "Date": 1598000754354,
                     "AttachedFiles": [
                         "failas1.txt",
                         "failas2.txt"
@@ -21,7 +18,7 @@
                 },
                 {
                     "Comment": "Komentaras trumpesnis",
-                    "Date": 169866343
+                    "Date": 169086343
                 }
             ]
         },
@@ -36,8 +33,7 @@
             "TaskName": "Tevine",
             "CompleteLevel": 10,
             "ID": 2,
-            "Description": "Tevines aprasymas",
-            "ChildTasks":["Uzduotis"]
+            "Description": "Tevines aprasymas"
         }
     ]
 }
