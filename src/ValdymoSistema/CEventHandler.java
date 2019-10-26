@@ -9,7 +9,9 @@ import ProjectData.CProjectController;
 import ProjectData.CTask;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
+import org.json.simple.parser.ParseException;
 
 public class CEventHandler
 {
@@ -52,7 +54,7 @@ public class CEventHandler
     ///-------- Event handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
-    public void mainEvent()
+    public void mainEvent() throws IOException, FileNotFoundException, ParseException
     {
         print("\n-- Iveskite norima funkcija : ");
         String input = getInput();
@@ -74,7 +76,7 @@ public class CEventHandler
     }
     
     
-    public int handleEvent(int eventId)
+    public int handleEvent(int eventId) throws IOException, FileNotFoundException, ParseException
     {
         int code = 0;
         
@@ -93,6 +95,9 @@ public class CEventHandler
                 break;
                 
             case 5: printAllTasksInfo();
+                break;
+                
+            case 6: importProject();
                 break;
             
             default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
@@ -394,6 +399,30 @@ public class CEventHandler
         print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
         
         return true;
+    }
+    
+    private void importProject() throws IOException, FileNotFoundException, ParseException
+    {
+        print("\n-- Iveskite failo pavadinima : ");
+        String input = getInput();
+        
+        if(!input.endsWith(".json"))
+        {
+           input += ".json"; 
+        }
+        
+        CProject project = new CProject();
+        
+        if(project.importData(input))
+        {
+            this.workingProject = project;
+
+            print("\n Projektas sekmingai importuotas !\n");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_UNKNOWN);
+        }
     }
     
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<

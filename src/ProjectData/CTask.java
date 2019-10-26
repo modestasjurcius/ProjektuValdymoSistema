@@ -5,6 +5,9 @@
 package ProjectData;
 
 import java.util.ArrayList;
+import javafx.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class CTask
 {
@@ -92,6 +95,39 @@ public class CTask
     }
     
     //=======================================
+    
+    public void parse(JSONObject data, ArrayList parentToChild)
+    {    
+        try
+        {
+            this.taskInfo.name = (String) data.get("TaskName");
+            this.taskInfo.completeLevel = ((Long) data.get("CompleteLevel")).intValue();
+            this.taskInfo.idNumber = ((Long) data.get("ID")).intValue();
+            this.taskInfo.taskDescription = (String)data.get("Description");
+            
+            if (data.containsKey("Comments"))
+            {
+                for (Object obj : (JSONArray) data.get("Comments"))
+                {
+                    JSONObject commentData = (JSONObject) obj;
+                    CComment comment = new CComment();
+                    comment.parse(commentData);
+                    
+                    this.comments.add(comment);
+                }
+            }
+            
+            if(data.containsKey("ParentTask"))
+            {
+                String parentTaskName = (String) data.get("ParentTask");
+                parentToChild.add(new Pair(parentTaskName, this.taskInfo.name));
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
     
     public String generateTaskInfoOutput()
     {
