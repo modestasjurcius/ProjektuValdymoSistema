@@ -78,4 +78,35 @@ public class CProject
     {
         return this.projectTasks;
     }
+    
+    public boolean removeTask(String name)
+    {
+        CTask task = getTaskByName(name);
+        
+        if(task == null || !this.projectTasks.contains(task))
+        {
+           return false; 
+        }
+        
+        checkDependencies(task);
+        
+        this.projectTasks.remove(task);
+        return true;
+    }
+    
+    public void checkDependencies(CTask task)
+    {
+        if(task.hasParentTask())
+        {
+            CTask parentTask = task.getParentTask();
+            ArrayList parentsChildren = parentTask.getChildTasks();
+            parentsChildren.remove(task);
+        }
+        
+        for(Object obj : task.getChildTasks())
+        {
+            CTask childTask = (CTask) obj;
+            childTask.setParentTask(null);
+        }
+    }
 }
