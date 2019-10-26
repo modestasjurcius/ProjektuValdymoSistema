@@ -9,14 +9,14 @@ import java.util.ArrayList;
 public class CTask
 {
     private CTask parentTask;
-    private CTaskInfo taskInfo;
+    private STaskInfo taskInfo;
 
     private ArrayList childTasks;
+    private ArrayList comments;
     
     public CTask()
     {
-        this.taskInfo = new CTaskInfo();
-        
+        this.taskInfo = new STaskInfo();
         this.childTasks = new ArrayList();
     }
     
@@ -32,16 +32,21 @@ public class CTask
     
     public void setTaskName(String name)
     {
-        this.taskInfo.setTaskName(name);
+        this.taskInfo.name = name;
+    }
+    
+    public String getTaskName()
+    {
+        return this.taskInfo.name;
     }
     
     public void setTaskDescription(String desc)
     {
-        this.taskInfo.setTaskDescription(desc);
+        this.taskInfo.taskDescription = desc;
     }
     
     public void setTaskId(int id)
     {
-        this.taskInfo.setTaskId(id);
+        this.taskInfo.idNumber = id;
     }
 }
