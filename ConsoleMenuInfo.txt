@@ -7,7 +7,7 @@
 
 *-1--Sukurti Projekta-------------------------------*
 *-2--Sukurti Uzduoti--------------------------------*
-*-3--Priskirti darbuotoja prie projekto-------------*
+*-3--Redaguoti Uzduoti------------------------------*
 *-4--Pasalinti darbuotoja is projekto---------------*
 *-5--Spausdinti uzduoties informacija---------------*
 *-6--Spausdinti visu projekto uzduociu informacija--*
