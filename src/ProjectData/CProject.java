@@ -60,4 +60,17 @@ public class CProject
     {
         return this.projectTasks.size();
     }
+    
+    public CTask getTaskByName(String name)
+    {
+        for(int i = 0; i<this.projectTasks.size(); i++)
+        {
+            CTask task = (CTask) this.projectTasks.get(i);
+            if(task != null && task.getTaskName().equals(name))
+            {
+                return task;
+            }
+        }
+        return null;
+    }
 }
