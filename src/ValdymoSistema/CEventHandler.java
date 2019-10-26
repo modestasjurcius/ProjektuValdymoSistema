@@ -92,6 +92,8 @@ public class CEventHandler
                 
             case 3: updateTask();
                 break;
+                
+            case 4: printAllTasksInfo();
             default: break;
         }
         
@@ -181,11 +183,17 @@ public class CEventHandler
                         break;
                         
                     case 5: addCommentToTask(task);
-                    
-                    case 6: updateTaskCompleteness(task);
-                        
-                    case 7: exitTaskUpdater = true; 
                         break;
+                        
+                    case 6: updateTaskCompleteness(task);
+                        break;
+                        
+                    case 7: print(task.generateTaskInfoOutput());
+                        break;
+                        
+                    case 8: exitTaskUpdater = true; 
+                        break;
+                        
                     default: handleError(eErrorCode.ERROR_BAD_INPUT);
                         break;
                 }
@@ -195,17 +203,48 @@ public class CEventHandler
     
     private void updateTaskCompleteness(CTask task)
     {
+        print("\n-- Dabartinis uzduoties uzbaigtumo lygis : " + task.getCompleteLevel() + "%");
+        print("\n-- Iveskite nauja lygi (0-100) : ");
         
+        String input = getInput();
+        
+        if(!isNumeric(input))
+        {
+            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC);
+            return;
+        }
+        
+        int value = 0;
+        
+        try 
+        {
+           value = Integer.parseInt(input); 
+        }
+        catch (Exception e)
+        {
+            handleError(eErrorCode.ERROR_BAD_INPUT, input);
+            return;
+        }
+        
+        if(value >= 0 && value <= 100)
+        {
+            task.setCompleteLevel(value);
+            print("\n-- Uzduoties atlikimo lygis pakeistas sekmingai!\n");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_BAD_INPUT, input);
+        }
     }
     
     private void addCommentToTask(CTask task)
     {
-        print("\n Irasykite komentara : ");
+        print("\n-- Irasykite komentara : ");
         String input = getInput();
         
         CComment comment = new CComment(input);
         
-        print("\n Ar norite prisegti failu prie komentaro ? (y/n) : ");
+        print("\n-- Ar norite prisegti failu prie komentaro ? (y/n) : ");
         input = getInput();
         
         boolean attachFiles = input.equals("y");
@@ -281,9 +320,32 @@ public class CEventHandler
         return task;
     }
     
-    private CTask getTask(String taskName)
+    private void printAllTasksInfo()
     {
-        return this.workingProject.getTaskByName(taskName);
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        if(this.workingProject.getTaskCount() == 0)
+        {
+            print("-- Nera uzduociu pasirinktame projekte!\n");
+            return;
+        }
+        
+        for(Object obj : this.workingProject.getAllTasks())
+        {
+            CTask task = (CTask) obj;
+            
+            if(task == null)
+            {
+                handleError(eErrorCode.ERROR_UNKNOWN);
+                return;
+            }
+            
+            print(task.generateTaskInfoOutput());
+        }
     }
      
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
@@ -337,7 +399,7 @@ public class CEventHandler
     
     public void printTaskUpdateMenu()
     {
-        print(this.strUpdateMenu);
+        print("\n" + this.strUpdateMenu);
     }
     
     private void print(String str)
@@ -380,6 +442,11 @@ public class CEventHandler
             return inputScanner.nextLine();
         }
         return null;
+    }
+
+    private CTask getTask(String taskName)
+    {
+        return this.workingProject.getTaskByName(taskName);
     }
 
     public boolean isNumeric(String str)
