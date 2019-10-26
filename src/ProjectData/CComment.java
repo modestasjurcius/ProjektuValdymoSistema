@@ -21,6 +21,8 @@ public class CComment
     {
         this.comment = comment;
         
+        this.attachedFilesPaths = new ArrayList();
+        
         Calendar calendar = Calendar.getInstance();
         this.dateOfComment = calendar.getTime();
         
@@ -34,12 +36,7 @@ public class CComment
     }
     
     public boolean attachFile(String path)
-    {
-        if(this.attachedFilesPaths == null)
-        {
-            this.attachedFilesPaths = new ArrayList();
-        }
-        
+    {     
         this.attachedFilesPaths.add(path);
         
         return true;
@@ -55,4 +52,28 @@ public class CComment
         return false;
     }
     
+    public String generateCommentOutput()
+    {
+        String out = "";
+        
+        out += "\n~~Komentaras : " + this.comment + "\n";
+        out += "~~Data : " + this.dateString + "\n";
+        out += "~~Prisegti failai : ";
+        
+        if(this.attachedFilesPaths.isEmpty())
+        {
+            out += "Nera";
+        }
+        else
+        {
+            out += "\n";
+            for(Object obj : this.attachedFilesPaths)
+            {
+                String value = (String) obj;
+                out += obj + "\n";
+            }
+        }
+        
+        return out;
+    }
 }

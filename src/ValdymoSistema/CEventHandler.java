@@ -3,6 +3,7 @@
  */
 package ValdymoSistema;
 
+import ProjectData.CComment;
 import ProjectData.CProject;
 import ProjectData.CProjectController;
 import ProjectData.CTask;
@@ -10,7 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CEventHandler
 {
@@ -20,6 +23,8 @@ public class CEventHandler
     
     private String strMenu;
     private String pathToMenu;
+    private String strUpdateMenu;
+    private String pathToUpdateMenu;
     
     private static Scanner inputScanner;
     
@@ -40,26 +45,38 @@ public class CEventHandler
         this.inputScanner = new Scanner(System.in);
         
         this.pathToMenu = "ConsoleMenuInfo.txt";
+        this.pathToUpdateMenu = "TaskUpdateMenuInfo.txt";
+        this.strUpdateMenu = "";
         this.strMenu = "";
        
-        parseMenu();
+        parseMenuFiles();
     }
+    
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Event handling methods
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
     public void mainEvent()
     {
-        print("\n Iveskite norima funkcija : ");
+        print("\n-- Iveskite norima funkcija : ");
         String input = getInput();
         print("\n");
         
+        int returnCode;
+        
         if (isNumeric(input))
         {
-            handleEvent(Integer.parseInt(input));
+            returnCode = handleEvent(Integer.parseInt(input));
         } 
         else
         {
             handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC, input);
-        } 
+            return;
+        }
+        
+        //handle return code
     }
+    
     
     public int handleEvent(int eventId)
     {
@@ -72,7 +89,11 @@ public class CEventHandler
                 
             case 2: createTask(); 
                 break;
-           
+                
+            case 3: updateTask();
+                break;
+                
+            case 4: printAllTasksInfo();
             default: break;
         }
         
@@ -105,7 +126,16 @@ public class CEventHandler
         print("***********\n Griztama i pagrindini menu\n\n");
     }
     
-    private void createTask()
+    private void handleError(eErrorCode code)
+    {
+        handleError(code, "");
+    }
+    
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Task handling methods
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
+    private void updateTask()
     {
         if(!isWorkingProjectValid())
         {
@@ -113,49 +143,239 @@ public class CEventHandler
             return;
         }
         
+        print("\n -- Iveskite uzduoties pavadinima : ");
+        String taskName = getInput();
+        
+        CTask task = getTask(taskName);
+        
+        if(task == null)
+        {
+            handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, taskName);
+            return;
+        }
+        
+        boolean exitTaskUpdater = false;
+        while(!exitTaskUpdater)
+        {
+            printTaskUpdateMenu();
+            print("\n-- Iveskite pasirinkima : ");
+            String input = getInput();
+            
+            if(isNumeric(input))
+            {
+                int choice = Integer.parseInt(input);
+                
+                switch(choice)
+                {
+                    case 1: updateTaskName(task);
+                        break;
+                        
+                    case 2: updateTaskDescription(task);
+                        break;
+                        
+                    case 3:
+                        CTask childTask = createTask();
+                        task.addChildTask(childTask);
+                        childTask.setParentTask(task);
+                        break;
+                        
+                    case 4: createParentTask(task);
+                        break;
+                        
+                    case 5: addCommentToTask(task);
+                        break;
+                        
+                    case 6: updateTaskCompleteness(task);
+                        break;
+                        
+                    case 7: print(task.generateTaskInfoOutput());
+                        break;
+                        
+                    case 8: exitTaskUpdater = true; 
+                        break;
+                        
+                    default: handleError(eErrorCode.ERROR_BAD_INPUT);
+                        break;
+                }
+            }        
+        }  
+    }
+    
+    private void updateTaskCompleteness(CTask task)
+    {
+        print("\n-- Dabartinis uzduoties uzbaigtumo lygis : " + task.getCompleteLevel() + "%");
+        print("\n-- Iveskite nauja lygi (0-100) : ");
+        
+        String input = getInput();
+        
+        if(!isNumeric(input))
+        {
+            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC);
+            return;
+        }
+        
+        int value = 0;
+        
+        try 
+        {
+           value = Integer.parseInt(input); 
+        }
+        catch (Exception e)
+        {
+            handleError(eErrorCode.ERROR_BAD_INPUT, input);
+            return;
+        }
+        
+        if(value >= 0 && value <= 100)
+        {
+            task.setCompleteLevel(value);
+            print("\n-- Uzduoties atlikimo lygis pakeistas sekmingai!\n");
+        }
+        else
+        {
+            handleError(eErrorCode.ERROR_BAD_INPUT, input);
+        }
+    }
+    
+    private void addCommentToTask(CTask task)
+    {
+        print("\n-- Irasykite komentara : ");
+        String input = getInput();
+        
+        CComment comment = new CComment(input);
+        
+        print("\n-- Ar norite prisegti failu prie komentaro ? (y/n) : ");
+        input = getInput();
+        
+        boolean attachFiles = input.equals("y");
+        
+        while(attachFiles)
+        {
+            print("\n-- Irasykite failo pavadinima : ");
+            comment.attachFile(getInput());
+            print("\n-- Ar norite ivesti kita faila ? (y/n) : ");
+            input = getInput();
+            attachFiles = input.equals("y");
+        }
+        
+        task.addComment(comment);
+        print("\n-- Komentaras sekmingai pridetas!");
+    }
+    
+    private void updateTaskName(CTask task)
+    {
+        print("\n-- Dabartinis uzduoties pavadinimas : " + task.getTaskName());
+        print("\n-- Iveskite nauja pavadinima : ");
+        String newName = getInput();
+        task.setTaskName(newName);
+        print("\n-- Uzduoties pavadinimas sekmingai pakeistas!\n");
+    }
+    
+    private void updateTaskDescription(CTask task)
+    {
+        print("\n-- Dabartinis uzduoties aprasymas : \n" + task.getTaskDescription());
+        print("\n-- Iveskite nauja aprasyma : ");
+        String newDesc = getInput();
+        task.setTaskDescription(newDesc);
+        print("\n-- Uzduoties aprasymas sekmingai pakeistas!\n");
+    }
+    
+    private void createParentTask(CTask childTask)
+    {
+        if(childTask.hasParentTask())
+        {
+            print("\n-- Uzduotis jau turi tevine uzduoti !\n");
+            return;
+        }
+        CTask parentTask = createTask();
+        
+        childTask.setParentTask(parentTask);
+        parentTask.addChildTask(childTask);
+    }
+    
+    private CTask createTask()
+    {
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return null;
+        }
+        
         CTask task = new CTask();
         
-        print("\n Iveskite uzduoties pavadinima : ");
+        print("\n-- Iveskite uzduoties pavadinima : ");
         String input = getInput();
         task.setTaskName(input);
         
-        print("\n Iveskite uzduoties aprasyma : ");
+        print("\n-- Iveskite uzduoties aprasyma : ");
         input = getInput();
         task.setTaskDescription(input);
         
         int id = this.workingProject.getTaskCount();
         task.setTaskId(id);
         
-        print("\n Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
+        print("\n-- Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
         
         this.workingProject.addTask(task);
+        return task;
     }
+    
+    private void printAllTasksInfo()
+    {
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        if(this.workingProject.getTaskCount() == 0)
+        {
+            print("-- Nera uzduociu pasirinktame projekte!\n");
+            return;
+        }
+        
+        for(Object obj : this.workingProject.getAllTasks())
+        {
+            CTask task = (CTask) obj;
+            
+            if(task == null)
+            {
+                handleError(eErrorCode.ERROR_UNKNOWN);
+                return;
+            }
+            
+            print(task.generateTaskInfoOutput());
+        }
+    }
+     
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Project handling methods
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
     private boolean createProject()
     {
         this.workingProject = new CProject();
         
-        print("\n Iveskite projekto pavadinima : ");
+        print("\n-- Iveskite projekto pavadinima : ");
         String name = getInput();
         
         this.workingProject.setProjectName(name);
         
-        print("\n Projektas pavadinimu : " + name + " - Sekmingai sukurtas!");
-        print("\n Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
+        print("\n-- Projektas pavadinimu : " + name + " - Sekmingai sukurtas!");
+        print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
         
         return true;
     }
     
-    private void handleError(eErrorCode code)
-    {
-        handleError(code, "");
-    }
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Printer methods
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
     public void printMenu()
     {
         print(this.strMenu);
         
-        String workingProjectInfo = "\n Darbinis projektas : ";
+        String workingProjectInfo = "\n===>>>> Darbinis projektas : ";
         
         if(this.workingProject == null)
         {
@@ -177,12 +397,21 @@ public class CEventHandler
         print(workingProjectInfo);
     }
     
-    private boolean isWorkingProjectValid()
+    public void printTaskUpdateMenu()
     {
-        return this.workingProject != null;
+        print("\n" + this.strUpdateMenu);
     }
     
-    private void parseMenu() throws FileNotFoundException
+    private void print(String str)
+    {
+        System.out.print(str);
+    }
+    
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Parsing methods
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
+    private void parseMenuFiles() throws FileNotFoundException
     {   
         File file = new File(this.pathToMenu);
         Scanner sc = new Scanner(file);
@@ -192,12 +421,19 @@ public class CEventHandler
             this.strMenu += sc.nextLine();
             this.strMenu += "\n";
         }
+        
+        file = new File(this.pathToUpdateMenu);
+        sc = new Scanner(file);
+        while (sc.hasNextLine())
+        {
+            this.strUpdateMenu += sc.nextLine();
+            this.strUpdateMenu += "\n";
+        }
     }
     
-    private void print(String str)
-    {
-        System.out.print(str);
-    }
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    ///-------- Utils
+    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
     public String getInput()
     {
@@ -208,8 +444,18 @@ public class CEventHandler
         return null;
     }
 
+    private CTask getTask(String taskName)
+    {
+        return this.workingProject.getTaskByName(taskName);
+    }
+
     public boolean isNumeric(String str)
     {
         return str.matches("-?\\d+(\\.\\d+)?");
+    }
+    
+    private boolean isWorkingProjectValid()
+    {
+        return this.workingProject != null;
     }
 }
