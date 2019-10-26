@@ -6,4 +6,5 @@
 *--4-- Sukurti tevine uzduoti
 *--5-- Prideti komentara
 *--6-- Redaguoti uzbaigtumo lygi
-*--7-- Grizti i pagrindini menu
+*--7-- Spausdinti uzduoties informacija
+*--8-- Grizti i pagrindini menu
