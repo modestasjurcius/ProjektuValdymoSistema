@@ -161,7 +161,9 @@ public class CProject
             }
             
         } catch (FileNotFoundException e) {
+            return false;
         } catch (IOException | ParseException e) {
+            return false;
         }
         
         
