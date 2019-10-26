@@ -1,0 +1,9 @@
+=====>>>>> Task Update Menu <<<<<=====
+
+*--1-- Pakeisti varda
+*--2-- Pakeisti aprasyma
+*--3-- Sukurti vaikine uzduoti
+*--4-- Sukurti tevine uzduoti
+*--5-- Prideti komentara
+*--6-- Redaguoti uzbaigtumo lygi
+*--7-- Grizti i pagrindini menu
