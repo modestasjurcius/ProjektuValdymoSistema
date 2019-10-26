@@ -1,0 +1,43 @@
+{
+    "Name": "Testinis Projektas",
+    "Tasks": [
+        {
+            "TaskName": "Uzduotis",
+            "CompleteLevel": 60,
+            "ID": 0,
+            "Description": "Aprasymas uzduoties pavadinimu Uzduotis1",
+            "ParentTask": "Tevine",
+            "ChildTasks": [
+                "Vaikine"
+            ],
+            "Comments": [
+                {
+                    "Comment": "Komentaras trumpas",
+                    "Date": 1598754354,
+                    "AttachedFiles": [
+                        "failas1.txt",
+                        "failas2.txt"
+                    ]
+                },
+                {
+                    "Comment": "Komentaras trumpesnis",
+                    "Date": 169866343
+                }
+            ]
+        },
+        {
+            "TaskName": "Vaikine",
+            "CompleteLevel": 30,
+            "ID" : 1,
+            "Description": "Vaikines aprasymas",
+            "ParentTask": "Uzduotis"
+        }
+        {
+            "TaskName": "Tevine",
+            "CompleteLevel": 10,
+            "ID": 2,
+            "Description": "Tevines aprasymas",
+            "ChildTasks":["Uzduotis"]
+        }
+    ]
+}
