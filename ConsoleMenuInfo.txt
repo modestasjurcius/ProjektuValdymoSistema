@@ -10,3 +10,4 @@
 *-3--Panaikinti Uzduoti-----------------------------*
 *-4--Perziureti Uzduoti-----------------------------*
 *-5--Spausdinti visu projekto uzduociu informacija--*
+*-6--Importuoti projekta i sistema------------------*
