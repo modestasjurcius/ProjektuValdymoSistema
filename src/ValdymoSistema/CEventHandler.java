@@ -9,11 +9,7 @@ import ProjectData.CProjectController;
 import ProjectData.CTask;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 public class CEventHandler
 {
@@ -94,7 +90,9 @@ public class CEventHandler
                 break;
                 
             case 4: printAllTasksInfo();
-            default: break;
+            
+            default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
+                break;
         }
         
         return code;
