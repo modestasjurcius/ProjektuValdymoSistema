@@ -91,9 +91,32 @@ public class CTask
         this.taskInfo.completeLevel = level;
     }
     
+    public boolean removeComment(int index)
+    {
+        if(index > this.comments.size() || index < 0)
+        {
+            return false;
+        }
+        
+        this.comments.remove(index);
+        
+        for(int i = 0; i < this.comments.size(); i++)
+        {
+            CComment comment = (CComment) this.comments.get(i);
+            comment.setId(i);
+        }
+        
+        return true;
+    }
+    
     public ArrayList<CComment> getComments()
     {
         return this.comments;
+    }
+    
+    public int getCommentsCount()
+    {
+        return this.comments.size();
     }
     
     //=======================================
