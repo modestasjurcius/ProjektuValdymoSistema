@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="281.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.SuccessDialogController">
+   <children>
+      <Label alignment="CENTER" layoutX="207.0" layoutY="14.0" prefHeight="68.0" prefWidth="186.0" text="Pranešimas">
+         <font>
+            <Font name="Calibri Bold" size="31.0" />
+         </font>
+      </Label>
+      <Label fx:id="messageTextField" alignment="CENTER" layoutX="43.0" layoutY="102.0" prefHeight="78.0" prefWidth="500.0" text="Sample text">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="closeButton" layoutX="162.0" layoutY="199.0" mnemonicParsing="false" onAction="#onClose" prefHeight="39.0" prefWidth="263.0" text="Supratau" />
+   </children>
+</AnchorPane>
