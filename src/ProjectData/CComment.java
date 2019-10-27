@@ -15,6 +15,7 @@ public class CComment
 {
     private ArrayList attachedFilesPaths;
     private String comment;
+    private int id;
     
     private Date dateOfComment;
     private String dateString;
@@ -22,7 +23,7 @@ public class CComment
     public CComment(String comment)
     {
         this.comment = comment;
-        
+        this.id = -1;
         this.attachedFilesPaths = new ArrayList();
         
         Calendar calendar = Calendar.getInstance();
@@ -35,6 +36,16 @@ public class CComment
     CComment()
     {
         this.attachedFilesPaths = new ArrayList();
+    }
+    
+    public int getId()
+    {
+        return this.id;
+    }
+    
+    public void setId(int id)
+    {
+        this.id = id;
     }
     
     public void setComment(String newComment)
@@ -75,7 +86,8 @@ public class CComment
     {
         String out = "";
         
-        out += "\n~~Komentaras : " + this.comment + "\n";
+        out += "\n~~Komentaro ID: " + this.id + "\n";
+        out += "~~Komentaras : " + this.comment + "\n";
         out += "~~Data : " + this.dateString + "\n";
         out += "~~Prisegti failai : ";
         
@@ -101,6 +113,7 @@ public class CComment
         try
         {
             this.comment = (String) data.get("Comment");
+            this.id = ((Long) data.get("ID")).intValue();
             setDate(new Date((long) data.get("Date")));
 
             JSONArray attachedFiles = (JSONArray) data.get("AttachedFiles");
@@ -124,6 +137,7 @@ public class CComment
         JSONObject data = new JSONObject();
         
         data.put("Comment", this.comment);
+        data.put("ID", this.id);
         data.put("Date", this.dateOfComment.getTime());
         
         if(this.attachedFilesPaths.size() > 0)
