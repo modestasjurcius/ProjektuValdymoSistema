@@ -1,10 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Modestas
  */
 package ValdymoSistema;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -16,30 +15,37 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Modestas
- */
 public class Main extends Application
 {
+    private static CEventHandler eventHandler;
+    private static MainController mainController;
+    
+    public static CEventHandler getEventHandler()
+    {
+        return eventHandler;
+    }
+    
+    public static MainController getMainController()
+    {
+        return mainController;
+    }
     
     @Override
     public void start(Stage primaryStage) throws IOException
     {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         
         primaryStage.setScene(scene);
         primaryStage.show();
+        
+        mainController = loader.<MainController>getController();
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException
     {
+        eventHandler = new CEventHandler();
         launch(args);
-    }
-    
+    } 
 }
