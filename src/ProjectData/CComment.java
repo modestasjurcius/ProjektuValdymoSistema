@@ -93,7 +93,7 @@ public class CComment
         
         if(this.attachedFilesPaths.isEmpty())
         {
-            out += "Nera";
+            out += "Nera\n";
         }
         else
         {
