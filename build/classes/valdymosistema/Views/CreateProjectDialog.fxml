@@ -24,7 +24,7 @@
             <Font size="17.0" />
          </font>
       </Button>
-      <Button layoutX="29.0" layoutY="161.0" mnemonicParsing="false" onAction="#cancelProjectCreation" prefHeight="40.0" prefWidth="200.0" text="Atšaukti">
+      <Button fx:id="closeButton" layoutX="29.0" layoutY="161.0" mnemonicParsing="false" onAction="#cancelProjectCreation" prefHeight="40.0" prefWidth="200.0" text="Atšaukti">
          <font>
             <Font size="17.0" />
          </font>
