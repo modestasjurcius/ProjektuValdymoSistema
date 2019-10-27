@@ -118,4 +118,26 @@ public class CComment
             ex.printStackTrace();
         }
     }
+    
+    public JSONObject generateExportJson()
+    {
+        JSONObject data = new JSONObject();
+        
+        data.put("Comment", this.comment);
+        data.put("Date", this.dateOfComment.getTime());
+        
+        if(this.attachedFilesPaths.size() > 0)
+        {
+            JSONArray attachedFiles = new JSONArray();
+            
+            for(Object obj : this.attachedFilesPaths)
+            {
+                attachedFiles.add((String) obj);
+            }
+            
+            data.put("AttachedFiles", attachedFiles);
+        }
+        
+        return data;
+    }
 }

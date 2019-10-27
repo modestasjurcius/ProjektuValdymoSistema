@@ -99,6 +99,9 @@ public class CEventHandler
                 
             case 6: importProject();
                 break;
+                
+            case 7: exportProject();
+                break;
             
             default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
                 break;
@@ -423,6 +426,20 @@ public class CEventHandler
         {
             handleError(eErrorCode.ERROR_UNKNOWN);
         }
+    }
+    
+    private void exportProject()
+    {
+        if(!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        print("\n-- Iveskite failo pavadinima : ");
+        String input = getInput();
+        
+        this.workingProject.exportData(input);
     }
     
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
