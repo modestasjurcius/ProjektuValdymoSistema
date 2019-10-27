@@ -129,6 +129,36 @@ public class CTask
         }
     }
     
+    public JSONObject generateExportJson()
+    {
+        JSONObject data = new JSONObject();
+        
+        data.put("TaskName", this.taskInfo.name);
+        data.put("CompleteLevel", this.taskInfo.completeLevel);
+        data.put("ID", this.taskInfo.idNumber);
+        data.put("Description", this.taskInfo.taskDescription);
+        
+        if(hasParentTask())
+        {
+            data.put("ParentTask", this.parentTask.getTaskName());
+        }
+        
+        if(this.comments.size() > 0)
+        {
+            JSONArray comments = new JSONArray();
+            
+            for(Object obj : this.comments)
+            {
+                CComment comment = (CComment) obj;           
+                comments.add(comment.generateExportJson());
+            }
+            
+            data.put("Comments", comments);
+        }
+        
+        return data;
+    }
+    
     public String generateTaskInfoOutput()
     {
         String out = "";
@@ -185,7 +215,6 @@ public class CTask
                 out += com.generateCommentOutput();
             }
         }
-        
         
         out += "\n";
         
