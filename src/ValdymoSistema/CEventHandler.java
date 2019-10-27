@@ -7,10 +7,21 @@ import ProjectData.CComment;
 import ProjectData.CProject;
 import ProjectData.CProjectController;
 import ProjectData.CTask;
+import static ValdymoSistema.Main.getMainController;
+import ValdymoSistema.Views.ErrorDialogController;
+import ValdymoSistema.Views.SuccessDialogController;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.json.simple.parser.ParseException;
 
 public class CEventHandler
@@ -23,16 +34,44 @@ public class CEventHandler
     private String pathToMenu;
     private String strUpdateMenu;
     private String pathToUpdateMenu;
+    private String pathToSavedProjects;
+    
+    private ObservableList<String> savedProjectList;
     
     private static Scanner inputScanner;
     
-    private enum eErrorCode
+    public enum eErrorCode
     {
         ERROR_OBJECT_NOT_FOUND,
         ERROR_INPUT_EXPECTED_NUMERIC,
         ERROR_BAD_INPUT,
         ERROR_UNKNOWN,
         ERROR_WORKING_PROJECT_INVALID,
+        ERROR_MISSING_INPUT,
+        ERROR_TOO_LONG_INPUT,
+        
+        COUNT
+    }
+    
+    public enum eEventType
+    {
+        EVENT_NONE,
+        EVENT_CREATE_PROJECT,
+        EVENT_CREATE_TASK,
+        EVENT_REMOVE_TASK,
+        EVENT_INSPECT_TASK,
+        EVENT_GET_ALL_TASKS_INFO,
+        EVENT_IMPORT_PROJECT,
+        EVENT_EXPORT_PROJECT,
+        
+        COUNT
+    }
+    
+    public enum eInfoType
+    {
+        INFO_PROJECT_CREATED,
+        INFO_PROJECT_IMPORTED,
+        INFO_TASK_CREATED,
         
         COUNT
     }
@@ -42,12 +81,16 @@ public class CEventHandler
         this.projectController = new CProjectController();
         this.inputScanner = new Scanner(System.in);
         
+        this.pathToSavedProjects = "SavedProjects.txt";
         this.pathToMenu = "ConsoleMenuInfo.txt";
         this.pathToUpdateMenu = "TaskUpdateMenuInfo.txt";
         this.strUpdateMenu = "";
         this.strMenu = "";
+        
+        this.savedProjectList = FXCollections.observableArrayList();
        
         parseMenuFiles();
+        parseSavedProjects();
     }
     
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
@@ -75,68 +118,115 @@ public class CEventHandler
         //handle return code
     }
     
-    
     public int handleEvent(int eventId) throws IOException, FileNotFoundException, ParseException
     {
-        int code = 0;
-        
-        switch(eventId)
-        {
-            case 1: createProject(); 
-                break;
-                
-            case 2: createTask(); 
-                break;
-                
-            case 3: removeTask();
-                break;
-                
-            case 4: updateTask();
-                break;
-                
-            case 5: printAllTasksInfo();
-                break;
-                
-            case 6: importProject();
-                break;
-                
-            case 7: exportProject();
-                break;
-            
-            default: handleError(eErrorCode.ERROR_BAD_INPUT, String.valueOf(code));
-                break;
-        }
-        
-        return code;
+        return 0;
     }
     
-    private void handleError(eErrorCode code, String input)
+    public void handleError(eErrorCode code, String input)
     {
         print("*****Klaida*****\n");
+        Stage errorStage = new Stage();
+        ErrorDialogController eDialogController = new ErrorDialogController();
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/ErrorDialog.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/ErrorDialog.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            errorStage.setScene(new Scene(root1));
+            
+            eDialogController = fxmlLoader.<ErrorDialogController>getController();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        String message = "";
         
         switch (code)
-        {          
+        {
             case ERROR_OBJECT_NOT_FOUND :
+                message = "Objektas su id : " + input + " -- nerastas\n";
                 print("Objektas su id : " + input + " -- nerastas\n");
                 break;
             case ERROR_INPUT_EXPECTED_NUMERIC:
+                message = "Bloga ivestis : " + input + " -- tiketasi skaitines reiksmes\n";
                 print("Bloga ivestis : " + input + " -- tiketasi skaitines reiksmes\n");
                 break;
             case ERROR_BAD_INPUT:
+                message = "Bloga ivestis : " + input + " -- esamame kontekste tokio pasirinkimo nera!\n";
                 print("Bloga ivestis : " + input + " -- esamame kontekste tokio pasirinkimo nera!\n");
                 break;
             case ERROR_UNKNOWN:
+                message = "Ivyko nezinoma klaida.\n";
                 print("Ivyko nezinoma klaida.\n");
                 break;
             case ERROR_WORKING_PROJECT_INVALID:
+                message = "Nepasirinktas joks darbinis projektas!\n";
                 print("Nepasirinktas joks darbinis projektas!\n");
                 break;
+            case ERROR_MISSING_INPUT:
+                message = "Ne visi privalomi teksto laukai yra užpildyti !";
+                print("[Error] Missing input\n");
+                break;
+            case ERROR_TOO_LONG_INPUT:
+                message = "Į lauką(-us) įrašytas(-i) per ilgas(-i) kintamasis(-ieji)!\n"
+                        + "Leistinas kintamųjų ilgis : 15 simbolių";
+                break;
+            
             default : break;
         }
         print("***********\n Griztama i pagrindini menu\n\n");
+        
+        eDialogController.setErrorMessage(message);
+        errorStage.show();
     }
     
-    private void handleError(eErrorCode code)
+    public void handleInfo(eInfoType type, String info)
+    {
+        Stage successStage = new Stage();
+        SuccessDialogController eDialogController = new SuccessDialogController();
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/SuccessDialog.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/SuccessDialog.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            successStage.setScene(new Scene(root1));
+            
+            eDialogController = fxmlLoader.<SuccessDialogController>getController();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        String message = "";
+        
+        switch(type)
+        {
+            case INFO_PROJECT_CREATED:
+                message = "Sukurtas naujas projektas pavadinimu : " + info + 
+                        "\nDarbinis projektas nustatytas į naujai sukurtą projektą.";
+                break;
+            case INFO_PROJECT_IMPORTED:
+                message = "Projektas sėkmingai importuotas!\nImportuotas projektas nustatytas į darbinį projektą.";
+                break;
+                
+            case INFO_TASK_CREATED:
+                message = "Užduotis pavadinimu : " + info +
+                        " - sėkmingai sukurta!\nUžduotis pridėta prie darbinio projekto.";
+                break;
+                
+            default:
+                break;
+        }
+        
+        eDialogController.setMessage(message);
+        successStage.show();
+    }
+    
+    public void handleError(eErrorCode code)
     {
         handleError(code, "");
     }
@@ -211,7 +301,7 @@ public class CEventHandler
                         break;
                         
                     case 3:
-                        CTask childTask = createTask();
+                        CTask childTask = createTask("", "");
                         task.addChildTask(childTask);
                         childTask.setParentTask(task);
                         break;
@@ -358,13 +448,13 @@ public class CEventHandler
             print("\n-- Uzduotis jau turi tevine uzduoti !\n");
             return;
         }
-        CTask parentTask = createTask();
+        CTask parentTask = createTask("", "");
         
         childTask.setParentTask(parentTask);
         parentTask.addChildTask(childTask);
     }
     
-    private CTask createTask()
+    public CTask createTask(String name, String description)
     {
         if(!isWorkingProjectValid())
         {
@@ -375,12 +465,10 @@ public class CEventHandler
         CTask task = new CTask();
         
         print("\n-- Iveskite uzduoties pavadinima : ");
-        String input = getInput();
-        task.setTaskName(input);
+        task.setTaskName(name);
         
         print("\n-- Iveskite uzduoties aprasyma : ");
-        input = getInput();
-        task.setTaskDescription(input);
+        task.setTaskDescription(description);
         
         int id = this.workingProject.getTaskCount();
         task.setTaskId(id);
@@ -388,6 +476,9 @@ public class CEventHandler
         print("\n-- Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
         
         this.workingProject.addTask(task);
+        
+        Main.getMainController().addTaskToList(task);
+        
         return task;
     }
     
@@ -423,42 +514,61 @@ public class CEventHandler
     ///-------- Project handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     
-    private boolean createProject()
+    public boolean createProject(String projectName)
     {
-        this.workingProject = new CProject();
+        CProject project = new CProject();
+        project.setProjectName(projectName);
+         
+        //print("\n-- Iveskite projekto pavadinima : ");
+        //String name = getInput();
+
+        onWorkingProjectChange(project);
         
-        print("\n-- Iveskite projekto pavadinima : ");
-        String name = getInput();
-        
-        this.workingProject.setProjectName(name);
-        
-        print("\n-- Projektas pavadinimu : " + name + " - Sekmingai sukurtas!");
+        print("\n-- Projektas pavadinimu : " + projectName + " - Sekmingai sukurtas!");
         print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
+           
+        handleInfo(eInfoType.INFO_PROJECT_CREATED, projectName);
         
         return true;
     }
     
-    private void importProject() throws IOException, FileNotFoundException, ParseException
+    public void importProject(String projectName) throws IOException, FileNotFoundException, ParseException
     {
-        print("\n-- Iveskite failo pavadinima : ");
-        String input = getInput();
+        //print("\n-- Iveskite failo pavadinima : ");
+        //String input = getInput();
         
-        if(!input.endsWith(".json"))
+        if(!projectName.endsWith(".json"))
         {
-           input += ".json"; 
+           projectName += ".json"; 
         }
         
         CProject project = new CProject();
         
-        if(project.importData(input))
+        if(project.importData(projectName))
         {
-            this.workingProject = project;
+            onWorkingProjectChange(project);
 
             print("\n Projektas sekmingai importuotas !\n");
         }
         else
         {
             handleError(eErrorCode.ERROR_UNKNOWN);
+        }
+    }
+    
+    private void onWorkingProjectChange(CProject project)
+    {
+        this.workingProject = project;
+        
+        MainController controller = getMainController();
+        
+        controller.setWorkingProjectName(project.getProjectName());
+        
+        controller.clearTaskList();
+        
+        for(Object obj : this.workingProject.getAllTasks())
+        {
+            controller.addTaskToList((CTask) obj);
         }
     }
     
@@ -540,6 +650,17 @@ public class CEventHandler
         }
     }
     
+    private void parseSavedProjects() throws FileNotFoundException
+    {
+        File file = new File(this.pathToSavedProjects);
+        Scanner sc = new Scanner(file);
+
+        while (sc.hasNextLine())
+        {
+            this.savedProjectList.add(sc.nextLine());
+        }
+    }
+    
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Utils
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
@@ -563,8 +684,18 @@ public class CEventHandler
         return str.matches("-?\\d+(\\.\\d+)?");
     }
     
-    private boolean isWorkingProjectValid()
+    public boolean isWorkingProjectValid()
     {
         return this.workingProject != null;
+    }
+    
+    public boolean hasSavedProjects()
+    {
+        return !this.savedProjectList.isEmpty();
+    }
+    
+    public ObservableList<String> getSavedProjects()
+    {
+        return this.savedProjectList;
     }
 }
