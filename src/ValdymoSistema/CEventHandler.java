@@ -222,13 +222,16 @@ public class CEventHandler
                     case 5: addCommentToTask(task);
                         break;
                         
-                    case 6: updateTaskCompleteness(task);
+                    case 6: removeComment(task);
                         break;
                         
-                    case 7: print(task.generateTaskInfoOutput());
+                    case 7: updateTaskCompleteness(task);
                         break;
                         
-                    case 8: exitTaskUpdater = true; 
+                    case 8: print(task.generateTaskInfoOutput());
+                        break;
+                        
+                    case 9: exitTaskUpdater = true; 
                         break;
                         
                     default: handleError(eErrorCode.ERROR_BAD_INPUT);
@@ -297,6 +300,37 @@ public class CEventHandler
         
         task.addComment(comment);
         print("\n-- Komentaras sekmingai pridetas!");
+    }
+    
+    private void removeComment(CTask task)
+    {
+        print("\n-- Irasykite komentaro ID: ");
+        String input = getInput();
+        
+        if(!isNumeric(input))
+        {
+            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC, input);
+            return;
+        }
+        
+        try
+        {
+            int commentId = Integer.parseInt(input);
+            
+            if(!task.removeComment(commentId))
+            {
+                handleError(eErrorCode.ERROR_BAD_INPUT, input);
+                return;
+            }
+            else
+            {
+                print("\n-- Komentaras su id : " + input + " -- sekmingai panaikintas!\n");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     
     private void updateTaskName(CTask task)
