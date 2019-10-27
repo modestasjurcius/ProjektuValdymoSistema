@@ -76,6 +76,8 @@ public class CTask
     
     public void addComment(CComment comment)
     {
+        comment.setId(this.comments.size());
+        
         this.comments.add(comment);
     }
     
