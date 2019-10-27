@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="294.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="ValdymoSistema.Views.ProjectImporterDialogController">
+   <children>
+      <Label alignment="CENTER" layoutX="95.0" layoutY="14.0" prefHeight="57.0" prefWidth="410.0" text="Importuoti projektą į sistemą">
+         <font>
+            <Font name="Calibri Bold" size="30.0" />
+         </font>
+      </Label>
+      <ListView fx:id="savedProjectsListView" layoutX="15.0" layoutY="136.0" prefHeight="149.0" prefWidth="571.0" />
+      <Label layoutX="14.0" layoutY="111.0" text="Pasirinkite projektą iš išsaugotų projektų sąrašo :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
