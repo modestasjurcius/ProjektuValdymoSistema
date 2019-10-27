@@ -7,6 +7,7 @@ package ProjectData;
 import UserData.CUser;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import java.util.*; 
@@ -160,12 +161,12 @@ public class CProject
                 }
             }
             
+            
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException | ParseException e) {
             return false;
         }
-        
         
         return true;
     }
@@ -182,5 +183,33 @@ public class CProject
         
         childTask.setParentTask(parentTask);
         parentTask.addChildTask(childTask);
+    }
+    
+    public void exportData(String fileName)
+    {
+        if(!fileName.endsWith(".json"))
+        {
+            fileName += ".json";
+        }
+        
+        JSONObject data = new JSONObject();
+    
+        data.put("Name", this.projectName);
+        
+        JSONArray tasks = new JSONArray();
+        
+        for(Object element : this.projectTasks)
+        {
+            CTask task = (CTask) element;
+            tasks.add(task.generateExportJson());
+        }
+        
+        data.put("Tasks", tasks);
+
+        try (FileWriter file = new FileWriter((fileName))) {
+            file.write(data.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  
     }
 }

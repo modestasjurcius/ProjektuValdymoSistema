@@ -11,3 +11,4 @@
 *-4--Perziureti Uzduoti-----------------------------*
 *-5--Spausdinti visu projekto uzduociu informacija--*
 *-6--Importuoti projekta i sistema------------------*
+*-7--Eksportuoti duomenis i faila-------------------*
