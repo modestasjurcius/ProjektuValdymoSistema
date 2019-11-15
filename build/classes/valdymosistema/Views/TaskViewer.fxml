@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="601.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.TaskViewerController">
+   <children>
+      <Label layoutX="61.0" layoutY="47.0" prefHeight="28.0" prefWidth="156.0" text="Užduoties pavadinimas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="97.0" layoutY="75.0" prefHeight="28.0" prefWidth="120.0" text="Užbaigtumo lygis :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="108.0" layoutY="103.0" prefHeight="28.0" prefWidth="109.0" text="Tėvinė užduotis :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="133.0" layoutY="131.0" prefHeight="28.0" prefWidth="78.0" text="Aprašymas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="91.0" layoutY="252.0" prefHeight="28.0" prefWidth="120.0" text="Vaikinės užduotys :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="taskNameLabel" layoutX="224.0" layoutY="47.0" prefHeight="28.0" prefWidth="156.0" text="&lt;task name&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="completeLevelLabel" layoutX="224.0" layoutY="75.0" prefHeight="28.0" prefWidth="120.0" text="&lt;complete level&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="parentTaskLabel" layoutX="224.0" layoutY="103.0" prefHeight="28.0" prefWidth="120.0" text="&lt;parent task&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="descriptionLabel" alignment="TOP_LEFT" layoutX="222.0" layoutY="135.0" prefHeight="100.0" prefWidth="245.0" text="&lt;description&gt;" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="childTasksListView" layoutX="222.0" layoutY="260.0" prefHeight="106.0" prefWidth="200.0" />
+      <Label layoutX="130.0" layoutY="430.0" prefHeight="28.0" prefWidth="85.0" text="Komentarai :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="commentsListView" layoutX="222.0" layoutY="430.0" prefHeight="127.0" prefWidth="200.0" />
+   </children>
+</AnchorPane>
