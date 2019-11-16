@@ -10,6 +10,7 @@ import ValdymoSistema.CEventHandler;
 import ValdymoSistema.Main;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -68,9 +70,12 @@ public class ProjectImporterDialogController implements Initializable
         return this.selectedProjectName;
     }
     
-    public void setSavedProjectList(ObservableList<String> list)
+    public void setSavedProjectList(Map map)
     {
-        this.savedProjectsListView.setItems(list);
+        for(Object name : map.keySet())
+        {
+            this.savedProjectsListView.getItems().add((String)name);
+        }
     }
     
     private void closeProjectImporter()
