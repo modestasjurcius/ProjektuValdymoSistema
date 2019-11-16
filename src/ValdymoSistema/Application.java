@@ -27,7 +27,7 @@ public class Application
         }     
     }
     
-    public static void Initialize() throws FileNotFoundException
+    public static void Initialize() throws FileNotFoundException, IOException, ParseException
     {
        eventHandler = new CEventHandler();
     }
