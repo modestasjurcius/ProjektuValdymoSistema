@@ -12,8 +12,11 @@ import ValdymoSistema.Views.ErrorDialogController;
 import ValdymoSistema.Views.SuccessDialogController;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import javafx.collections.FXCollections;
@@ -22,6 +25,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class CEventHandler
@@ -36,7 +43,7 @@ public class CEventHandler
     private String pathToUpdateMenu;
     private String pathToSavedProjects;
     
-    private ObservableList<String> savedProjectList;
+    private Map<String, String> savedProjectList;
     
     private static Scanner inputScanner;
     
@@ -76,18 +83,18 @@ public class CEventHandler
         COUNT
     }
     
-    public CEventHandler() throws FileNotFoundException
+    public CEventHandler() throws FileNotFoundException, IOException, ParseException
     {   
         this.projectController = new CProjectController();
         this.inputScanner = new Scanner(System.in);
         
-        this.pathToSavedProjects = "SavedProjects.txt";
+        this.pathToSavedProjects = "SavedProjects.json";
         this.pathToMenu = "ConsoleMenuInfo.txt";
         this.pathToUpdateMenu = "TaskUpdateMenuInfo.txt";
         this.strUpdateMenu = "";
         this.strMenu = "";
         
-        this.savedProjectList = FXCollections.observableArrayList();
+        this.savedProjectList = new Hashtable<>(); 
        
         parseMenuFiles();
         parseSavedProjects();
@@ -273,7 +280,7 @@ public class CEventHandler
         print("\n -- Iveskite uzduoties pavadinima : ");
         String taskName = getInput();
         
-        CTask task = getTask(taskName);
+        CTask task = getTaskByName(taskName);
         
         if(task == null)
         {
@@ -537,14 +544,11 @@ public class CEventHandler
         //print("\n-- Iveskite failo pavadinima : ");
         //String input = getInput();
         
-        if(!projectName.endsWith(".json"))
-        {
-           projectName += ".json"; 
-        }
-        
         CProject project = new CProject();
         
-        if(project.importData(projectName))
+        String projectFile = this.savedProjectList.get(projectName);
+        
+        if(project.importData(projectFile))
         {
             onWorkingProjectChange(project);
 
@@ -650,14 +654,29 @@ public class CEventHandler
         }
     }
     
-    private void parseSavedProjects() throws FileNotFoundException
+    private void parseSavedProjects() throws FileNotFoundException, IOException, ParseException
     {
-        File file = new File(this.pathToSavedProjects);
-        Scanner sc = new Scanner(file);
+        FileReader reader = new FileReader(this.pathToSavedProjects);
 
-        while (sc.hasNextLine())
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonData = (JSONObject) jsonParser.parse(reader);
+        
+        JSONArray projects = (JSONArray) jsonData.get("Projects");
+        
+        for(Object obj : projects)
         {
-            this.savedProjectList.add(sc.nextLine());
+           JSONObject project = (JSONObject) obj;
+           
+           if(project.containsKey("Name") && project.containsKey("File"))
+           {
+               String name = (String) project.get("Name");
+               String file = (String) project.get("File");
+               this.savedProjectList.put(name, file);
+           }
+           else
+           {
+               print("[ERROR] Projects parsing error");
+           }
         }
     }
     
@@ -674,7 +693,7 @@ public class CEventHandler
         return null;
     }
 
-    private CTask getTask(String taskName)
+    public CTask getTaskByName(String taskName)
     {
         return this.workingProject.getTaskByName(taskName);
     }
@@ -694,7 +713,7 @@ public class CEventHandler
         return !this.savedProjectList.isEmpty();
     }
     
-    public ObservableList<String> getSavedProjects()
+    public Map getSavedProjects()
     {
         return this.savedProjectList;
     }
