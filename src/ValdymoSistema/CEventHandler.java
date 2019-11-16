@@ -79,6 +79,7 @@ public class CEventHandler
         INFO_PROJECT_CREATED,
         INFO_PROJECT_IMPORTED,
         INFO_TASK_CREATED,
+        INFO_PROJECT_EXPORTED,
         
         COUNT
     }
@@ -216,6 +217,7 @@ public class CEventHandler
                 message = "Sukurtas naujas projektas pavadinimu : " + info + 
                         "\nDarbinis projektas nustatytas į naujai sukurtą projektą.";
                 break;
+                
             case INFO_PROJECT_IMPORTED:
                 message = "Projektas sėkmingai importuotas!\nImportuotas projektas nustatytas į darbinį projektą.";
                 break;
@@ -223,6 +225,11 @@ public class CEventHandler
             case INFO_TASK_CREATED:
                 message = "Užduotis pavadinimu : " + info +
                         " - sėkmingai sukurta!\nUžduotis pridėta prie darbinio projekto.";
+                break;
+                
+            case INFO_PROJECT_EXPORTED:
+                message = "Projektas pavadinimu : " + info +
+                        " - sėkmingai exportuotas  į failą : " + info + ".json";
                 break;
                 
             default:
@@ -576,7 +583,7 @@ public class CEventHandler
         }
     }
     
-    private void exportProject()
+    public void exportProject(String projectName)
     {
         if(!isWorkingProjectValid())
         {
@@ -584,10 +591,12 @@ public class CEventHandler
             return;
         }
         
-        print("\n-- Iveskite failo pavadinima : ");
-        String input = getInput();
+        //print("\n-- Iveskite failo pavadinima : ");
+        //String input = getInput();
         
-        this.workingProject.exportData(input);
+        this.workingProject.exportData(projectName);
+        
+        handleInfo(eInfoType.INFO_PROJECT_EXPORTED, projectName);
     }
     
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
