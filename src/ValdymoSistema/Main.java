@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.json.simple.parser.ParseException;
 
 public class Main extends Application
 {
@@ -43,7 +44,7 @@ public class Main extends Application
         mainController = loader.<MainController>getController();
     }
 
-    public static void main(String[] args) throws FileNotFoundException
+    public static void main(String[] args) throws FileNotFoundException, IOException, ParseException
     {
         eventHandler = new CEventHandler();
         launch(args);
