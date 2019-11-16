@@ -11,6 +11,7 @@ import ValdymoSistema.CEventHandler.eEventType;
 import ValdymoSistema.Views.ProjectImporterDialogController;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,12 +29,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.json.simple.parser.ParseException;
 
 
 public class MainController implements Initializable
 {
     private CEventHandler eventHandler;
+    private String selectedTaskName;
     
     @FXML
     private Button createProjectButton;
@@ -42,6 +47,8 @@ public class MainController implements Initializable
     private ListView<String> tasksListView;
     @FXML
     private TabPane projectInfoTabPane;
+    @FXML
+    private Button taskViewerButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -49,7 +56,22 @@ public class MainController implements Initializable
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
         this.workingProjectName.setText("Nepasirinktas");
         
+        this.taskViewerButton.setVisible(false);
+        
         this.tasksListView.setItems(FXCollections.observableArrayList());
+        this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            
+        @Override
+        public void handle(MouseEvent event) {
+            selectedTaskName = tasksListView.getSelectionModel().getSelectedItem();
+
+            if (selectedTaskName != null && selectedTaskName != "")
+            {
+                taskViewerButton.setVisible(true);
+            }
+        }
+    });
+        
     }    
 
     @FXML
@@ -71,7 +93,7 @@ public class MainController implements Initializable
     }
 
     @FXML
-    private void openProjectAction(ActionEvent event)
+    private void openProjectAction(ActionEvent event) throws IOException
     {
         if(!this.eventHandler.hasSavedProjects())
         {
@@ -87,13 +109,18 @@ public class MainController implements Initializable
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
-            
+
             fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(eventHandler.getSavedProjects());
             stage.show();
         } catch (Exception e)
         {
             e.printStackTrace();
         }
+    }
+    
+    public String getSelectedTaskName()
+    {
+        return this.selectedTaskName;
     }
     
     public void setWorkingProjectName(String name)
@@ -117,7 +144,7 @@ public class MainController implements Initializable
     }
 
     @FXML
-    private void createTaskAction(ActionEvent event)
+    private void createTaskAction(ActionEvent event) throws IOException
     {
         if(!this.eventHandler.isWorkingProjectValid())
         {
@@ -125,10 +152,21 @@ public class MainController implements Initializable
             return;
         }
         
+        openView("src/ValdymoSistema/Views/TaskCreatDialog.fxml");
+    }
+
+    @FXML
+    private void onViewTask(ActionEvent event) throws IOException
+    {
+        openView("src/ValdymoSistema/Views/TaskViewer.fxml");
+    }
+    
+    private void openView(String path) throws IOException
+    {
         try
         {
-            File f = new File("src/ValdymoSistema/Views/TaskCreatDialog.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/TaskCreatDialog.fxml"));
+            File f = new File(path);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource(path));
             fxmlLoader.setLocation(f.toURI().toURL());
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
