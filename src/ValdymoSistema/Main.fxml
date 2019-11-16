@@ -31,6 +31,7 @@
                </effect>
             </Button>
             <Button mnemonicParsing="false" onAction="#createTaskAction" prefHeight="40.0" prefWidth="207.0" text="Sukurti užduotį" />
+            <Button mnemonicParsing="false" onAction="#exportPojectData" prefHeight="40.0" prefWidth="207.0" text="Eksportuoti projektą" />
             <ChoiceBox prefHeight="52.0" prefWidth="206.0" />
          </children>
       </FlowPane>
@@ -61,7 +62,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Untitled Tab 2">
+          <Tab text="Darbuotojai ?">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>

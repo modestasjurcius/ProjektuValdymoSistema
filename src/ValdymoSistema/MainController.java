@@ -79,13 +79,8 @@ public class MainController implements Initializable
     {
         try
         {
-            File f = new File("src/ValdymoSistema/Views/CreateProjectDialog.fxml");
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/CreateProjectDialog.fxml"));
-            fxmlLoader.setLocation(f.toURI().toURL());
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root1));
-            stage.show();
+            openView("src/ValdymoSistema/Views/CreateProjectDialog.fxml");
+            
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -175,6 +170,19 @@ public class MainController implements Initializable
         } catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void exportPojectData(ActionEvent event)
+    {
+        try
+        {
+           openView("src/ValdymoSistema/Views/ExportProjectDialog.fxml"); 
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 }
