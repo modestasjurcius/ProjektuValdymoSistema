@@ -284,84 +284,6 @@ public class CEventHandler
         }
     }
 
-    private void updateTask()
-    {
-        if (!isWorkingProjectValid())
-        {
-            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
-            return;
-        }
-
-        print("\n -- Iveskite uzduoties pavadinima : ");
-        String taskName = getInput();
-
-        CTask task = getTaskByName(taskName);
-
-        if (task == null)
-        {
-            handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, taskName);
-            return;
-        }
-
-        boolean exitTaskUpdater = false;
-        while (!exitTaskUpdater)
-        {
-            printTaskUpdateMenu();
-            print("\n-- Iveskite pasirinkima : ");
-            String input = getInput();
-
-            if (isNumeric(input))
-            {
-                int choice = Integer.parseInt(input);
-
-                switch (choice)
-                {
-                    case 1:
-                        updateTaskName(task);
-                        break;
-
-                    case 2:
-                        updateTaskDescription(task);
-                        break;
-
-                    case 3:
-                        CTask childTask = createTask("", "", null);
-                        task.addChildTask(childTask);
-                        childTask.setParentTask(task);
-                        break;
-
-                    case 4:
-                        createParentTask(task);
-                        break;
-
-                    case 5:
-                        addCommentToTask(task);
-                        break;
-
-                    case 6:
-                        removeComment(task);
-                        break;
-
-                    case 7:
-                        updateTaskCompleteness(task);
-                        break;
-
-                    case 8:
-                        print(task.generateTaskInfoOutput());
-                        break;
-
-                    case 9:
-                        exitTaskUpdater = true;
-                        break;
-
-                    default:
-                        handleError(eErrorCode.ERROR_BAD_INPUT);
-                        break;
-                }
-            }
-        }
-    }
-
     private void updateTaskCompleteness(CTask task)
     {
         print("\n-- Dabartinis uzduoties uzbaigtumo lygis : " + task.getCompleteLevel() + "%");
@@ -421,37 +343,6 @@ public class CEventHandler
 
         task.addComment(comment);
         print("\n-- Komentaras sekmingai pridetas!");
-    }
-
-    private void removeComment(CTask task)
-    {
-        print("\n-- Irasykite komentaro ID: ");
-        String input = getInput();
-
-        if (!isNumeric(input))
-        {
-            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC, input);
-            return;
-        }
-
-        try
-        {
-            int commentId = Integer.parseInt(input);
-
-            if (!task.removeComment(commentId))
-            {
-                handleError(eErrorCode.ERROR_BAD_INPUT, input);
-                return;
-            }
-            else
-            {
-                print("\n-- Komentaras su id : " + input + " -- sekmingai panaikintas!\n");
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     private void updateTaskName(CTask task)
