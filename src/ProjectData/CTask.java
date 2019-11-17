@@ -15,13 +15,13 @@ public class CTask
     private STaskInfo taskInfo;
 
     private ArrayList childTasks;
-    private ArrayList comments;
+    private ArrayList<CComment> comments;
     
     public CTask()
     {
         this.taskInfo = new STaskInfo();
         this.childTasks = new ArrayList();
-        this.comments = new ArrayList();
+        this.comments = new ArrayList<CComment>();
     }
     
     public void addChildTask(CTask task)
@@ -79,6 +79,11 @@ public class CTask
         comment.setId(this.comments.size());
         
         this.comments.add(comment);
+    }
+    
+    public CComment getCommentById(int id)
+    {
+        return this.comments.get(id);
     }
     
     public int getCompleteLevel()
