@@ -163,6 +163,17 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onRemoveComment(ActionEvent event)
     {
+        int commentId = this.commentsListView.getSelectionModel().getSelectedIndex();
+        CTask currentTask = this.eventHandler.getTaskByName(this.taskName);
+
+        if (currentTask == null)
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_OBJECT_NOT_FOUND);
+            return;
+        }
+
+        currentTask.removeComment(commentId);
+        updateCommentsListView(currentTask);
     }
 
     @FXML
@@ -219,6 +230,16 @@ public class TaskViewerController implements Initializable
             CTask childTask = (CTask) obj;
 
             this.childTasksListView.getItems().add(childTask.getTaskName());
+        }
+    }
+
+    private void updateCommentsListView(CTask currentTask)
+    {
+        this.commentsListView.getItems().clear();
+
+        for (CComment com : currentTask.getComments())
+        {
+            this.commentsListView.getItems().add(String.valueOf(com.getId()));
         }
     }
 }
