@@ -7,15 +7,11 @@ package ValdymoSistema;
 
 import ProjectData.CTask;
 import ValdymoSistema.CEventHandler.eErrorCode;
-import ValdymoSistema.CEventHandler.eEventType;
 import ValdymoSistema.Views.ProjectImporterDialogController;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,14 +27,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.json.simple.parser.ParseException;
-
 
 public class MainController implements Initializable
 {
+
     private CEventHandler eventHandler;
     private String selectedTaskName;
-    
+
     @FXML
     private Button createProjectButton;
     @FXML
@@ -49,30 +44,36 @@ public class MainController implements Initializable
     private TabPane projectInfoTabPane;
     @FXML
     private Button taskViewerButton;
+    @FXML
+    private Button taskRemoverButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
         this.workingProjectName.setText("Nepasirinktas");
-        
-        this.taskViewerButton.setVisible(false);
-        
-        this.tasksListView.setItems(FXCollections.observableArrayList());
-        this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            
-        @Override
-        public void handle(MouseEvent event) {
-            selectedTaskName = tasksListView.getSelectionModel().getSelectedItem();
 
-            if (selectedTaskName != null && selectedTaskName != "")
+        this.taskViewerButton.setVisible(false);
+        this.taskRemoverButton.setVisible(false);
+
+        this.tasksListView.setItems(FXCollections.observableArrayList());
+        this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+
+            @Override
+            public void handle(MouseEvent event)
             {
-                taskViewerButton.setVisible(true);
+                selectedTaskName = tasksListView.getSelectionModel().getSelectedItem();
+
+                if (selectedTaskName != null && selectedTaskName != "")
+                {
+                    taskViewerButton.setVisible(true);
+                    taskRemoverButton.setVisible(true);
+                }
             }
-        }
-    });
-        
-    }    
+        });
+
+    }
 
     @FXML
     private void createProjectAction(ActionEvent event)
@@ -80,8 +81,9 @@ public class MainController implements Initializable
         try
         {
             openView("src/ValdymoSistema/Views/CreateProjectDialog.fxml");
-            
-        } catch (Exception e)
+
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -90,12 +92,12 @@ public class MainController implements Initializable
     @FXML
     private void openProjectAction(ActionEvent event) throws IOException
     {
-        if(!this.eventHandler.hasSavedProjects())
+        if (!this.eventHandler.hasSavedProjects())
         {
             this.eventHandler.handleError(eErrorCode.ERROR_UNKNOWN);
             return;
         }
-        
+
         try
         {
             File f = new File("src/ValdymoSistema/Views/ProjectImporterDialog.fxml");
@@ -107,32 +109,38 @@ public class MainController implements Initializable
 
             fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(eventHandler.getSavedProjects());
             stage.show();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-    
+
     public String getSelectedTaskName()
     {
         return this.selectedTaskName;
     }
-    
+
     public void setWorkingProjectName(String name)
     {
         this.workingProjectName.setText(name);
     }
-    
+
     public void fillTasksList(ObservableList<String> list)
     {
         this.tasksListView.setItems(list);
     }
-    
+
     public void addTaskToList(CTask task)
     {
         this.tasksListView.getItems().add(task.getTaskName());
     }
-    
+
+    public void removeTaskFromList(CTask task)
+    {
+        this.tasksListView.getItems().remove(task.getTaskName());
+    }
+
     public void clearTaskList()
     {
         this.tasksListView.getItems().clear();
@@ -141,12 +149,12 @@ public class MainController implements Initializable
     @FXML
     private void createTaskAction(ActionEvent event) throws IOException
     {
-        if(!this.eventHandler.isWorkingProjectValid())
+        if (!this.eventHandler.isWorkingProjectValid())
         {
             this.eventHandler.handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
             return;
         }
-        
+
         openView("src/ValdymoSistema/Views/TaskCreatDialog.fxml");
     }
 
@@ -155,7 +163,7 @@ public class MainController implements Initializable
     {
         openView("src/ValdymoSistema/Views/TaskViewer.fxml");
     }
-    
+
     private void openView(String path) throws IOException
     {
         try
@@ -167,7 +175,8 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
             stage.show();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -178,11 +187,23 @@ public class MainController implements Initializable
     {
         try
         {
-           openView("src/ValdymoSistema/Views/ExportProjectDialog.fxml"); 
+            openView("src/ValdymoSistema/Views/ExportProjectDialog.fxml");
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onRemoveTask(ActionEvent event)
+    {
+        if (this.selectedTaskName == null || this.selectedTaskName == "")
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_TASK_NOT_SELECTED);
+            return;
+        }
+
+        this.eventHandler.removeTask(this.selectedTaskName);
     }
 }
