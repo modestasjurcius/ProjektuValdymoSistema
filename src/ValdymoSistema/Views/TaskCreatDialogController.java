@@ -1,10 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * FXML Controller class
+ *
+ * @author Modestas
  */
 package ValdymoSistema.Views;
 
+import ProjectData.CTask;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.CEventHandler.eInfoType;
@@ -17,11 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Modestas
- */
+
 public class TaskCreatDialogController implements Initializable
 {
     private CEventHandler eventHandler;
@@ -31,11 +28,14 @@ public class TaskCreatDialogController implements Initializable
     private TextField descriptionTextView;
     @FXML
     private Button confirmCreateTask;
+    
+    private CTask parentTask;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
+        this.parentTask = null;
     }    
 
     @FXML
@@ -50,7 +50,15 @@ public class TaskCreatDialogController implements Initializable
             return;
         }
         
-        this.eventHandler.createTask(taskName, description);
+        this.eventHandler.createTask(taskName, description, null);
+        
+        if(this.parentTask != null)
+        {
+            CTask childTask = this.eventHandler.getTaskByName(taskName);
+            
+            this.parentTask.addChildTask(childTask);
+            childTask.setParentTask(this.parentTask);
+        }
         
         this.eventHandler.handleInfo(eInfoType.INFO_TASK_CREATED, taskName);
         
@@ -63,4 +71,8 @@ public class TaskCreatDialogController implements Initializable
         stage.close();
     }
     
+    public void setParentTask(CTask task)
+    {
+        this.parentTask = task;
+    }
 }
