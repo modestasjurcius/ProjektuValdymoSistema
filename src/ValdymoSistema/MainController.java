@@ -126,6 +126,18 @@ public class MainController implements Initializable
         }
         return this.selectedTaskName;
     }
+    
+    public void selectTask(String taskName)
+    {
+        try
+        {
+            this.tasksListView.getSelectionModel().select(taskName);
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 
     public void setWorkingProjectName(String name)
     {
@@ -166,6 +178,11 @@ public class MainController implements Initializable
 
     @FXML
     private void onViewTask(ActionEvent event) throws IOException
+    {
+        openTaskViewer();
+    }
+    
+    public void openTaskViewer() throws IOException
     {
         openView("src/ValdymoSistema/Views/TaskViewer.fxml");
     }
