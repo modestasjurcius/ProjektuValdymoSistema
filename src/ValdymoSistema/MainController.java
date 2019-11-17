@@ -118,6 +118,12 @@ public class MainController implements Initializable
 
     public String getSelectedTaskName()
     {
+        String checkValue = this.tasksListView.getSelectionModel().getSelectedItem();
+
+        if (!checkValue.equals(this.selectedTaskName))
+        {
+            this.selectedTaskName = checkValue;
+        }
         return this.selectedTaskName;
     }
 
