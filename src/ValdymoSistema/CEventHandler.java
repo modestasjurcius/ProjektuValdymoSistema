@@ -325,7 +325,7 @@ public class CEventHandler
                         break;
 
                     case 3:
-                        CTask childTask = createTask("", "");
+                        CTask childTask = createTask("", "", null);
                         task.addChildTask(childTask);
                         childTask.setParentTask(task);
                         break;
@@ -479,13 +479,13 @@ public class CEventHandler
             print("\n-- Uzduotis jau turi tevine uzduoti !\n");
             return;
         }
-        CTask parentTask = createTask("", "");
+        CTask parentTask = createTask("", "", null);
 
         childTask.setParentTask(parentTask);
         parentTask.addChildTask(childTask);
     }
 
-    public CTask createTask(String name, String description)
+    public CTask createTask(String name, String description, CTask parentTask)
     {
         if (!isWorkingProjectValid())
         {
@@ -505,6 +505,12 @@ public class CEventHandler
         task.setTaskId(id);
 
         print("\n-- Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
+        
+        if(parentTask != null)
+        {
+            task.setParentTask(parentTask);
+            parentTask.addChildTask(task);
+        }
 
         this.workingProject.addTask(task);
 
