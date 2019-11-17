@@ -149,11 +149,10 @@ public class TaskViewerController implements Initializable
             this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
             return;
         }
-        
+
         Main.getMainController().selectTask(selectedTaskName);
         Main.getMainController().openTaskViewer();
         close();
-        
     }
 
     @FXML
@@ -169,6 +168,40 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onViewComment(ActionEvent event)
     {
+        try
+        {
+            CTask task = this.eventHandler.getTaskByName(this.taskName);
+            CComment comment = null;
+
+            if (task != null)
+            {
+                comment = task.getCommentById(this.commentsListView.getSelectionModel().getSelectedIndex());
+                if (comment == null)
+                {
+                    this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_UNKNOWN);
+                    return;
+                }
+            }
+            else
+            {
+                this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_UNKNOWN);
+                return;
+            }
+
+            File f = new File("src/ValdymoSistema/Views/CommentViewer.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/CommentViewer.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+
+            fxmlLoader.<CommentViewerController>getController().setComment(comment);
+            stage.show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void close()
