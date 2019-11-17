@@ -28,6 +28,7 @@ import javafx.stage.WindowEvent;
 public class TaskViewerController implements Initializable
 {
 
+    private CEventHandler eventHandler;
     private String taskName;
 
     @FXML
@@ -46,16 +47,16 @@ public class TaskViewerController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        this.taskName = getMainController().getSelectedTaskName();
+        this.eventHandler = Main.getEventHandler();
 
+        this.taskName = getMainController().getSelectedTaskName();
         this.taskNameLabel.setText(this.taskName);
 
-        CEventHandler eventHandler = Main.getEventHandler();
         CTask currentTask = eventHandler.getTaskByName(this.taskName);
 
         if (currentTask == null)
         {
-            eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
             return;
         }
 
@@ -85,10 +86,10 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onAddChildTask(ActionEvent event)
     {
-        CTask currentTask = Main.getEventHandler().getTaskByName(this.taskName);
-        
+        CTask currentTask = this.eventHandler.getTaskByName(this.taskName);
+
         try
-        {   
+        {
             File f = new File("src/ValdymoSistema/Views/TaskCreatDialog.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/TaskCreatDialog.fxml"));
             fxmlLoader.setLocation(f.toURI().toURL());
@@ -98,14 +99,14 @@ public class TaskViewerController implements Initializable
 
             fxmlLoader.<TaskCreatDialogController>getController().setParentTask(currentTask);
             stage.show();
-            
-            stage.setOnHidden(new EventHandler<WindowEvent> (){
-            
-            @Override
-            public void handle(WindowEvent event)
+
+            stage.setOnHidden(new EventHandler<WindowEvent>()
             {
-               updateChildTasksListView(currentTask); 
-            }
+                @Override
+                public void handle(WindowEvent event)
+                {
+                    updateChildTasksListView(currentTask);
+                }
             });
         }
         catch (Exception e)
@@ -117,6 +118,24 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onRemoveChildTask(ActionEvent event)
     {
+        String selectedTaskName = this.childTasksListView.getSelectionModel().getSelectedItem();
+
+        if (selectedTaskName == null || selectedTaskName.isEmpty())
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
+            return;
+        }
+
+        CTask selectedTask = this.eventHandler.getTaskByName(selectedTaskName);
+
+        if (selectedTask == null)
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_UNKNOWN);
+            return;
+        }
+
+        this.eventHandler.removeTask(selectedTaskName);
+        updateChildTasksListView(this.eventHandler.getTaskByName(this.taskName));
     }
 
     @FXML
@@ -144,11 +163,11 @@ public class TaskViewerController implements Initializable
         Stage stage = (Stage) this.childTasksListView.getScene().getWindow();
         stage.close();
     }
-    
+
     public void updateChildTasksListView(CTask currentTask)
     {
         this.childTasksListView.getItems().clear();
-        
+
         for (Object obj : currentTask.getChildTasks())
         {
             CTask childTask = (CTask) obj;
