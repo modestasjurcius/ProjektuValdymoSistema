@@ -56,6 +56,7 @@ public class CEventHandler
         ERROR_WORKING_PROJECT_INVALID,
         ERROR_MISSING_INPUT,
         ERROR_TOO_LONG_INPUT,
+        ERROR_TASK_NOT_SELECTED,
         
         COUNT
     }
@@ -181,6 +182,9 @@ public class CEventHandler
             case ERROR_TOO_LONG_INPUT:
                 message = "Į lauką(-us) įrašytas(-i) per ilgas(-i) kintamasis(-ieji)!\n"
                         + "Leistinas kintamųjų ilgis : 15 simbolių";
+                break;
+            case ERROR_TASK_NOT_SELECTED:
+                message = "Nepasirinkta jokia užduotis !";
                 break;
             
             default : break;
