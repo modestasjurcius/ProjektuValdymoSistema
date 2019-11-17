@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.CommentViewerController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="185.0" layoutY="14.0" prefHeight="58.0" prefWidth="230.0" text="Komentaras">
+         <font>
+            <Font name="System Bold" size="28.0" />
+         </font>
+      </Label>
+      <Label layoutX="31.0" layoutY="72.0" text="Data :">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="dateLabel" layoutX="76.0" layoutY="72.0" prefHeight="21.0" prefWidth="221.0" text="&lt;date&gt;">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="311.0" layoutY="72.0" text="Autorius :">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="authorLabel" layoutX="381.0" layoutY="72.0" text="&lt;author&gt;">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="31.0" layoutY="104.0" text="Komentaras :">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="commentLabel" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="128.0" layoutY="106.0" prefHeight="73.0" prefWidth="447.0" text="&lt;comment&gt;">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="31.0" layoutY="200.0" text="Prisegti failai :">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <ListView fx:id="attachedFilesListView" layoutX="142.0" layoutY="200.0" prefHeight="132.0" prefWidth="432.0" />
+   </children>
+</AnchorPane>
