@@ -47,7 +47,7 @@ public class TaskViewerController implements Initializable
         
         if(currentTask == null)
         {
-            eventHandler.handleError(CEventHandler.eErrorCode.ERROR_UNKNOWN);
+            eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
             return;
         }
         
