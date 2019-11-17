@@ -11,6 +11,7 @@ import ValdymoSistema.CEventHandler;
 import ValdymoSistema.Main;
 import static ValdymoSistema.Main.getMainController;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -139,8 +140,20 @@ public class TaskViewerController implements Initializable
     }
 
     @FXML
-    private void onViewChildTask(ActionEvent event)
+    private void onViewChildTask(ActionEvent event) throws IOException
     {
+        String selectedTaskName = this.childTasksListView.getSelectionModel().getSelectedItem();
+
+        if (selectedTaskName == null || selectedTaskName.isEmpty())
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
+            return;
+        }
+        
+        Main.getMainController().selectTask(selectedTaskName);
+        Main.getMainController().openTaskViewer();
+        close();
+        
     }
 
     @FXML
