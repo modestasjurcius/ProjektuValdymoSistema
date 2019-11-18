@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="488.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.TaskViewerController">
+   <children>
+      <Label layoutX="61.0" layoutY="47.0" prefHeight="28.0" prefWidth="156.0" text="Užduoties pavadinimas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="97.0" layoutY="75.0" prefHeight="28.0" prefWidth="120.0" text="Užbaigtumo lygis :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="108.0" layoutY="103.0" prefHeight="28.0" prefWidth="109.0" text="Tėvinė užduotis :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="133.0" layoutY="131.0" prefHeight="28.0" prefWidth="78.0" text="Aprašymas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="24.0" layoutY="252.0" prefHeight="28.0" prefWidth="120.0" text="Vaikinės užduotys :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="taskNameLabel" layoutX="224.0" layoutY="47.0" prefHeight="28.0" prefWidth="156.0" text="&lt;task name&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="completeLevelLabel" layoutX="224.0" layoutY="75.0" prefHeight="28.0" prefWidth="120.0" text="&lt;complete level&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="parentTaskLabel" layoutX="224.0" layoutY="103.0" prefHeight="28.0" prefWidth="120.0" text="&lt;parent task&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="descriptionLabel" alignment="TOP_LEFT" layoutX="222.0" layoutY="135.0" prefHeight="100.0" prefWidth="245.0" text="&lt;description&gt;" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="childTasksListView" layoutX="24.0" layoutY="280.0" prefHeight="100.0" prefWidth="200.0" />
+      <Label layoutX="268.0" layoutY="252.0" prefHeight="28.0" prefWidth="85.0" text="Komentarai :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="commentsListView" layoutX="267.0" layoutY="280.0" prefHeight="100.0" prefWidth="200.0" />
+      <Button fx:id="addChildTaskButton" layoutX="24.0" layoutY="396.0" mnemonicParsing="false" onAction="#onAddChildTask" text="Pridėti" />
+      <Button fx:id="removeChildTaskButton" layoutX="84.0" layoutY="396.0" mnemonicParsing="false" onAction="#onRemoveChildTask" text="Panaikinti" />
+      <Button fx:id="viewChildTaskButton" layoutX="157.0" layoutY="396.0" mnemonicParsing="false" onAction="#onViewChildTask" text="Peržiūrėti" />
+      <Button fx:id="addCommentButton" layoutX="267.0" layoutY="396.0" mnemonicParsing="false" onAction="#onAddComment" text="Pridėti" />
+      <Button fx:id="removeCommentButton" layoutX="327.0" layoutY="396.0" mnemonicParsing="false" onAction="#onRemoveComment" text="Panaikinti" />
+      <Button fx:id="viewCommentButton" layoutX="401.0" layoutY="396.0" mnemonicParsing="false" onAction="#onViewComment" text="Peržiūrėti" />
+      <Button layoutX="22.0" layoutY="437.0" mnemonicParsing="false" onAction="#onEditTask" prefHeight="37.0" prefWidth="444.0" text="Redaguoti">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <TextField fx:id="taskNameTextField" layoutX="228.0" layoutY="49.0" prefHeight="25.0" prefWidth="245.0" />
+      <TextField fx:id="completeLevelTextField" layoutX="228.0" layoutY="77.0" prefHeight="25.0" prefWidth="43.0" />
+      <ChoiceBox fx:id="selectParentTaskChoiceBox" layoutX="227.0" layoutY="105.0" prefWidth="150.0" />
+      <TextArea fx:id="taskDescriptionTextArea" layoutX="227.0" layoutY="135.0" prefHeight="100.0" prefWidth="245.0" />
+      <Label layoutX="152.0" layoutY="27.0" text="Autorius :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="authorLabel" layoutX="230.0" layoutY="29.0" text="&lt;author&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

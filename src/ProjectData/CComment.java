@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 
 public class CComment
 {
-    private ArrayList attachedFilesPaths;
+    private ArrayList<String> attachedFilesPaths;
     private String comment;
     private int id;
     
@@ -24,7 +24,7 @@ public class CComment
     {
         this.comment = comment;
         this.id = -1;
-        this.attachedFilesPaths = new ArrayList();
+        this.attachedFilesPaths = new ArrayList<String>();
         
         Calendar calendar = Calendar.getInstance();
         this.dateOfComment = calendar.getTime();
@@ -35,7 +35,7 @@ public class CComment
 
     CComment()
     {
-        this.attachedFilesPaths = new ArrayList();
+        this.attachedFilesPaths = new ArrayList<String>();
     }
     
     public int getId()
@@ -53,11 +53,26 @@ public class CComment
         this.comment = newComment;
     }
     
+    public String getComment()
+    {
+        return this.comment;
+    }
+    
     public boolean attachFile(String path)
     {     
         this.attachedFilesPaths.add(path);
         
         return true;
+    }
+    
+    public void clearAttachedFiles()
+    {
+        this.attachedFilesPaths.clear();
+    }
+    
+    public ArrayList<String> getAttachedFiles()
+    {
+        return this.attachedFilesPaths;
     }
     
     public boolean removeFile(String path)
@@ -80,6 +95,11 @@ public class CComment
         
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateString = formatter.format(this.dateOfComment); 
+    }
+    
+    public String getDateString()
+    {
+        return this.dateString;
     }
     
     public String generateCommentOutput()

@@ -1,5 +1,0 @@
-comp0 comp0 Maxima email@gmail.com
-comp1 comp1 Norfa email@gmail.com
-comp2 comp2 Microsoft email@gmail.com
-comp3 comp3 Asus email@gmail.com
-comp4 comp4 Nordcurrent email@gmail.com

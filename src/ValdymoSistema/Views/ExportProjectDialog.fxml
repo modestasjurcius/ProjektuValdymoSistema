@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="215.0" prefWidth="559.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.ExportProjectDialogController">
+   <children>
+      <Label layoutX="100.0" layoutY="97.0" text="Projekto failas :">
+         <font>
+            <Font name="Calibri" size="19.0" />
+         </font>
+      </Label>
+      <Label layoutX="117.0" layoutY="14.0" text="Eksportuoti projektą į failą">
+         <font>
+            <Font name="Calibri Bold" size="29.0" />
+         </font>
+      </Label>
+      <Button layoutX="328.0" layoutY="161.0" mnemonicParsing="false" onAction="#confimProjectExport" prefHeight="40.0" prefWidth="200.0" text="Eksportuoti">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Button>
+      <Button fx:id="closeButton" layoutX="29.0" layoutY="161.0" mnemonicParsing="false" onAction="#cancelProjectExport" prefHeight="40.0" prefWidth="200.0" text="Atšaukti">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Button>
+      <Label fx:id="projectFileLabel" layoutX="229.0" layoutY="94.0" prefHeight="28.0" prefWidth="297.0" text="&lt;file&gt;">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
