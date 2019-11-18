@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -25,11 +26,11 @@ public class TaskCreatDialogController implements Initializable
     @FXML
     private TextField taskNameTextView;
     @FXML
-    private TextField descriptionTextView;
-    @FXML
     private Button confirmCreateTask;
     
     private CTask parentTask;
+    @FXML
+    private TextArea descriptionTextArea;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -42,7 +43,7 @@ public class TaskCreatDialogController implements Initializable
     private void onConfirmCreateTask(ActionEvent event)
     {   
         String taskName = this.taskNameTextView.getText();
-        String description = this.descriptionTextView.getText();
+        String description = this.descriptionTextArea.getText();
         
         if(taskName == null || taskName.length() > 15)
         {
