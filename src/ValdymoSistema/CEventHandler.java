@@ -13,6 +13,7 @@ import ValdymoSistema.Views.SuccessDialogController;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -60,7 +61,6 @@ public class CEventHandler
         ERROR_TOO_LONG_INPUT,
         ERROR_TASK_NOT_SELECTED,
         ERROR_COMMENT_NOT_SELECTED,
-        
         COUNT
     }
 
@@ -94,7 +94,6 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Event handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-
     public void handleError(eErrorCode code, String input)
     {
         print("*****Klaida*****\n");
@@ -225,7 +224,6 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Task handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    
     public void removeTask(String taskName)
     {
         if (!isWorkingProjectValid())
@@ -273,8 +271,8 @@ public class CEventHandler
         task.setTaskId(id);
 
         print("\n-- Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
-        
-        if(parentTask != null)
+
+        if (parentTask != null)
         {
             task.setParentTask(parentTask);
             parentTask.addChildTask(task);
@@ -290,7 +288,6 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Project handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    
     public boolean createProject(String projectName)
     {
         CProject project = new CProject();
@@ -336,16 +333,27 @@ public class CEventHandler
         MainController controller = getMainController();
 
         controller.setWorkingProjectName(project.getProjectName());
-        
+
         controller.refreshTasksListView();
     }
-    
+
     public ArrayList<CTask> getAllWorkingProjectTasks()
     {
         return this.workingProject.getAllTasks();
     }
 
-    public void exportProject(String projectName)
+    public String getWorkingProjectSaveFile()
+    {
+        if (!isWorkingProjectValid())
+        {
+            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return null;
+        }
+
+        return this.workingProject.getProjectSaveFile();
+    }
+
+    public void exportWorkingProject()
     {
         if (!isWorkingProjectValid())
         {
@@ -353,11 +361,43 @@ public class CEventHandler
             return;
         }
 
-        //print("\n-- Iveskite failo pavadinima : ");
-        //String input = getInput();
-        this.workingProject.exportData(projectName);
+        saveWorkingProject();
+        this.workingProject.exportData();
 
-        handleInfo(eInfoType.INFO_PROJECT_EXPORTED, projectName);
+        handleInfo(eInfoType.INFO_PROJECT_EXPORTED, this.workingProject.getProjectName());
+    }
+
+    public void saveWorkingProject()
+    {
+        this.savedProjectList.put(this.workingProject.getProjectName(), this.workingProject.getProjectSaveFile());
+        exportSavedProjects();
+    }
+
+    private void exportSavedProjects()
+    {
+        try
+        {
+            JSONObject json = new JSONObject();
+            JSONArray arr = new JSONArray();
+
+            for (String name : this.savedProjectList.keySet())
+            {
+                JSONObject obj = new JSONObject();
+                obj.put("Name", name);
+                obj.put("File", this.savedProjectList.get(name));
+                arr.add(obj);
+            }
+
+            json.put("Projects", arr);
+
+            FileWriter file = new FileWriter(this.pathToSavedProjects);
+            file.write(json.toJSONString());
+            file.flush();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
