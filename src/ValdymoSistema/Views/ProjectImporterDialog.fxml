@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="294.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="ValdymoSistema.Views.ProjectImporterDialogController">
+<AnchorPane id="AnchorPane" prefHeight="274.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.ProjectImporterDialogController">
    <children>
-      <Label alignment="CENTER" layoutX="95.0" layoutY="14.0" prefHeight="57.0" prefWidth="410.0" text="Importuoti projektą į sistemą">
+      <Label alignment="CENTER" layoutX="15.0" layoutY="14.0" prefHeight="57.0" prefWidth="380.0" text="Importuoti projektą į sistemą">
          <font>
             <Font name="Calibri Bold" size="30.0" />
          </font>
       </Label>
-      <ListView fx:id="savedProjectsListView" layoutX="15.0" layoutY="136.0" prefHeight="149.0" prefWidth="571.0" />
-      <Label layoutX="14.0" layoutY="111.0" text="Pasirinkite projektą iš išsaugotų projektų sąrašo :">
+      <ListView fx:id="savedProjectsListView" layoutX="15.0" layoutY="136.0" prefHeight="128.0" prefWidth="380.0" />
+      <Label fx:id="importProjectTitleLabel" layoutX="14.0" layoutY="111.0" text="Pasirinkite projektą iš išsaugotų projektų sąrašo :">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
+      <Label fx:id="noSavedProjectsLabel" layoutX="56.0" layoutY="103.0" prefHeight="37.0" prefWidth="339.0" text="Nerastas išsaugotų projektų failas, arba jis yra tuščias.">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="backActionButton" layoutX="127.0" layoutY="182.0" mnemonicParsing="false" onAction="#onBackAction" prefHeight="37.0" prefWidth="127.0" text="Atgal" />
    </children>
 </AnchorPane>

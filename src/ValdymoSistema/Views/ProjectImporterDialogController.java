@@ -13,9 +13,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -29,10 +32,17 @@ public class ProjectImporterDialogController implements Initializable
     @FXML
     private ListView<String> savedProjectsListView;
     private String selectedProjectName;
+    @FXML
+    private Label noSavedProjectsLabel;
+    @FXML
+    private Button backActionButton;
+    @FXML
+    private Label importProjectTitleLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+        setValidImportMode(true);
         this.eventHandler = Main.getEventHandler();
         this.savedProjectsListView.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
@@ -81,5 +91,20 @@ public class ProjectImporterDialogController implements Initializable
     {
         Stage stage = (Stage) this.savedProjectsListView.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    private void onBackAction(ActionEvent event)
+    {
+        closeProjectImporter();
+    }
+    
+    public void setValidImportMode(boolean enable)
+    {
+        this.backActionButton.setVisible(!enable);
+        this.noSavedProjectsLabel.setVisible(!enable);
+        
+        this.savedProjectsListView.setVisible(enable);
+        this.importProjectTitleLabel.setVisible(enable);
     }
 }
