@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -58,6 +59,8 @@ public class CEventHandler
         ERROR_MISSING_INPUT,
         ERROR_TOO_LONG_INPUT,
         ERROR_TASK_NOT_SELECTED,
+        ERROR_COMMENT_NOT_SELECTED,
+        
         COUNT
     }
 
@@ -104,31 +107,6 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Event handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    public void mainEvent() throws IOException, FileNotFoundException, ParseException
-    {
-        print("\n-- Iveskite norima funkcija : ");
-        String input = getInput();
-        print("\n");
-
-        int returnCode;
-
-        if (isNumeric(input))
-        {
-            returnCode = handleEvent(Integer.parseInt(input));
-        }
-        else
-        {
-            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC, input);
-            return;
-        }
-
-        //handle return code
-    }
-
-    public int handleEvent(int eventId) throws IOException, FileNotFoundException, ParseException
-    {
-        return 0;
-    }
 
     public void handleError(eErrorCode code, String input)
     {
@@ -184,6 +162,9 @@ public class CEventHandler
                 break;
             case ERROR_TASK_NOT_SELECTED:
                 message = "Nepasirinkta jokia užduotis !";
+                break;
+            case ERROR_COMMENT_NOT_SELECTED:
+                message = "Nepasirinktas joks komentaras !";
                 break;
 
             default:
@@ -486,13 +467,13 @@ public class CEventHandler
         MainController controller = getMainController();
 
         controller.setWorkingProjectName(project.getProjectName());
-
-        controller.clearTaskList();
-
-        for (Object obj : this.workingProject.getAllTasks())
-        {
-            controller.addTaskToList((CTask) obj);
-        }
+        
+        controller.refreshTasksListView();
+    }
+    
+    public ArrayList<CTask> getAllWorkingProjectTasks()
+    {
+        return this.workingProject.getAllTasks();
     }
 
     public void exportProject(String projectName)
