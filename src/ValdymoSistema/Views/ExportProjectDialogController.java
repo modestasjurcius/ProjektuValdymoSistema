@@ -12,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class ExportProjectDialogController implements Initializable
@@ -21,32 +21,21 @@ public class ExportProjectDialogController implements Initializable
     private CEventHandler eventHandler;
 
     @FXML
-    private TextField projectNameTextField;
-    @FXML
     private Button closeButton;
+    @FXML
+    private Label projectFileLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
+        this.projectFileLabel.setText(this.eventHandler.getWorkingProjectSaveFile());
     }
 
     @FXML
     private void confimProjectExport(ActionEvent event)
     {
-        String projectName = this.projectNameTextField.getText();
-
-        if (projectName == null || projectName.isEmpty())
-        {
-            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_MISSING_INPUT);
-            return;
-        } else if (projectName.length() > 15)
-        {
-            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TOO_LONG_INPUT);
-            return;
-        }
-
-        this.eventHandler.exportProject(projectName);
+        this.eventHandler.exportWorkingProject();
         closeDialog();
     }
 
