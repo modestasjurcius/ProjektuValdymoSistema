@@ -334,7 +334,14 @@ public class TaskViewerController implements Initializable
             }
         }
         
-        this.selectParentTaskChoiceBox.getSelectionModel().selectFirst();
+        if(this.currentTask.hasParentTask())
+        {
+            this.selectParentTaskChoiceBox.getSelectionModel().select(this.currentTask.getParentTask().getTaskName());
+        }
+        else
+        {
+           this.selectParentTaskChoiceBox.getSelectionModel().selectFirst(); 
+        }
     }
     
     private void enableEditorMode(boolean value)

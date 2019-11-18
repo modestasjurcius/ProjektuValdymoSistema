@@ -114,6 +114,14 @@ public class CommentViewerController implements Initializable
         this.enterPathTextField.setVisible(enable);
         this.commentTextArea.setVisible(enable);
         this.enterPathTitleLabel.setVisible(enable);
+        
+        if(enable)
+        {
+            if(this.comment != null)
+            {
+               this.commentTextArea.setText(this.comment.getComment()); 
+            }
+        }
 
         //viewer items
         this.authorLabel.setVisible(!enable);
@@ -124,7 +132,6 @@ public class CommentViewerController implements Initializable
     @FXML
     private void onEditComment(ActionEvent event)
     {
-        
         if(!this.isNewCommentMode && !this.isEditModeEnabled)
         {
             enableEditorMode(!this.isEditModeEnabled);
@@ -136,6 +143,10 @@ public class CommentViewerController implements Initializable
         if (this.isNewCommentMode)
         {
             this.comment = new CComment(commentText);
+        }
+        else
+        {
+            this.comment.setComment(commentText);
         }
         
         this.comment.clearAttachedFiles();
