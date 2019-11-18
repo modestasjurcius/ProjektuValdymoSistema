@@ -3,7 +3,6 @@
  */
 package ValdymoSistema;
 
-import ProjectData.CComment;
 import ProjectData.CProject;
 import ProjectData.CProjectController;
 import ProjectData.CTask;
@@ -16,18 +15,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,7 +39,7 @@ public class CEventHandler
     private String strUpdateMenu;
     private String pathToUpdateMenu;
     private String pathToSavedProjects;
-
+    
     private Map<String, String> savedProjectList;
 
     private static Scanner inputScanner;
@@ -464,27 +458,34 @@ public class CEventHandler
 
     private void parseSavedProjects() throws FileNotFoundException, IOException, ParseException
     {
-        FileReader reader = new FileReader(this.pathToSavedProjects);
-
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonData = (JSONObject) jsonParser.parse(reader);
-
-        JSONArray projects = (JSONArray) jsonData.get("Projects");
-
-        for (Object obj : projects)
+        try
         {
-            JSONObject project = (JSONObject) obj;
+            FileReader reader = new FileReader(this.pathToSavedProjects);
 
-            if (project.containsKey("Name") && project.containsKey("File"))
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonData = (JSONObject) jsonParser.parse(reader);
+
+            JSONArray projects = (JSONArray) jsonData.get("Projects");
+
+            for (Object obj : projects)
             {
-                String name = (String) project.get("Name");
-                String file = (String) project.get("File");
-                this.savedProjectList.put(name, file);
+                JSONObject project = (JSONObject) obj;
+
+                if (project.containsKey("Name") && project.containsKey("File"))
+                {
+                    String name = (String) project.get("Name");
+                    String file = (String) project.get("File");
+                    this.savedProjectList.put(name, file);
+                }
+                else
+                {
+                    print("[ERROR] Projects parsing error");
+                }
             }
-            else
-            {
-                print("[ERROR] Projects parsing error");
-            }
+        }
+        catch (Exception ex)
+        {
+           ex.printStackTrace();
         }
     }
 
