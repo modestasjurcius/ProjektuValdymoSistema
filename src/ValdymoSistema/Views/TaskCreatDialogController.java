@@ -57,7 +57,6 @@ public class TaskCreatDialogController implements Initializable
         {
             CTask childTask = this.eventHandler.getTaskByName(taskName);
             
-            this.parentTask.addChildTask(childTask);
             childTask.setParentTask(this.parentTask);
         }
         
