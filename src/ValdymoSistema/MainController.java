@@ -92,12 +92,6 @@ public class MainController implements Initializable
     @FXML
     private void openProjectAction(ActionEvent event) throws IOException
     {
-        if (!this.eventHandler.hasSavedProjects())
-        {
-            this.eventHandler.handleError(eErrorCode.ERROR_UNKNOWN);
-            return;
-        }
-
         try
         {
             File f = new File("src/ValdymoSistema/Views/ProjectImporterDialog.fxml");
@@ -107,7 +101,15 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
 
-            fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(eventHandler.getSavedProjects());
+            if (this.eventHandler.hasSavedProjects())
+            {
+                fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(eventHandler.getSavedProjects());
+            }
+            else
+            {
+                fxmlLoader.<ProjectImporterDialogController>getController().setValidImportMode(false);
+            }
+            
             stage.show();
         }
         catch (Exception e)
