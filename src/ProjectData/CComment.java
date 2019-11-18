@@ -65,6 +65,11 @@ public class CComment
         return true;
     }
     
+    public void clearAttachedFiles()
+    {
+        this.attachedFilesPaths.clear();
+    }
+    
     public ArrayList<String> getAttachedFiles()
     {
         return this.attachedFilesPaths;
