@@ -21,8 +21,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -30,7 +34,11 @@ public class TaskViewerController implements Initializable
 {
 
     private CEventHandler eventHandler;
+
+    private CTask currentTask;
     private String taskName;
+
+    private boolean isEditorMode;
 
     @FXML
     private Label taskNameLabel;
@@ -44,51 +52,77 @@ public class TaskViewerController implements Initializable
     private ListView<String> childTasksListView;
     @FXML
     private ListView<String> commentsListView;
+    @FXML
+    private Button addChildTaskButton;
+    @FXML
+    private Button removeChildTaskButton;
+    @FXML
+    private Button viewChildTaskButton;
+    @FXML
+    private Button addCommentButton;
+    @FXML
+    private Button removeCommentButton;
+    @FXML
+    private TextField taskNameTextField;
+    @FXML
+    private TextField completeLevelTextField;
+    @FXML
+    private ChoiceBox<String> selectParentTaskChoiceBox;
+    @FXML
+    private TextArea taskDescriptionTextArea;
+    @FXML
+    private Label authorLabel;
+    @FXML
+    private Button viewCommentButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+        enableEditorMode(false);
+
         this.eventHandler = Main.getEventHandler();
 
         this.taskName = getMainController().getSelectedTaskName();
         this.taskNameLabel.setText(this.taskName);
+        this.currentTask = eventHandler.getTaskByName(this.taskName);
 
-        CTask currentTask = eventHandler.getTaskByName(this.taskName);
-
-        if (currentTask == null)
+        if (this.currentTask == null)
         {
             this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
             return;
         }
 
-        this.completeLevelLabel.setText(String.valueOf(currentTask.getCompleteLevel()));
+        updateViewInfo();
+    }
 
-        if (currentTask.hasParentTask())
+    private void updateViewInfo()
+    {
+        if (this.currentTask == null)
         {
-            this.parentTaskLabel.setText(currentTask.getParentTask().getTaskName());
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_OBJECT_NOT_FOUND, this.taskName);
+            return;
+        }
+
+        this.taskNameLabel.setText(this.taskName);
+        this.completeLevelLabel.setText(String.valueOf(this.currentTask.getCompleteLevel()));
+        this.descriptionLabel.setText(this.currentTask.getTaskDescription());
+
+        if (this.currentTask.hasParentTask())
+        {
+            this.parentTaskLabel.setText(this.currentTask.getParentTask().getTaskName());
         }
         else
         {
             this.parentTaskLabel.setText("Nėra");
         }
 
-        this.descriptionLabel.setText(currentTask.getTaskDescription());
-
-        updateChildTasksListView(currentTask);
-
-        for (Object obj : currentTask.getComments())
-        {
-            CComment com = (CComment) obj;
-
-            this.commentsListView.getItems().add(String.valueOf(com.getId()));
-        }
+        updateChildTasksListView();
+        updateCommentsListView();
     }
 
     @FXML
     private void onAddChildTask(ActionEvent event)
     {
-        CTask currentTask = this.eventHandler.getTaskByName(this.taskName);
-
         try
         {
             File f = new File("src/ValdymoSistema/Views/TaskCreatDialog.fxml");
@@ -98,7 +132,7 @@ public class TaskViewerController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
 
-            fxmlLoader.<TaskCreatDialogController>getController().setParentTask(currentTask);
+            fxmlLoader.<TaskCreatDialogController>getController().setParentTask(this.currentTask);
             stage.show();
 
             stage.setOnHidden(new EventHandler<WindowEvent>()
@@ -106,7 +140,7 @@ public class TaskViewerController implements Initializable
                 @Override
                 public void handle(WindowEvent event)
                 {
-                    updateChildTasksListView(currentTask);
+                    updateChildTasksListView();
                 }
             });
         }
@@ -136,7 +170,7 @@ public class TaskViewerController implements Initializable
         }
 
         this.eventHandler.removeTask(selectedTaskName);
-        updateChildTasksListView(this.eventHandler.getTaskByName(this.taskName));
+        updateChildTasksListView();
     }
 
     @FXML
@@ -167,18 +201,19 @@ public class TaskViewerController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
             stage.show();
-            
+
             CTask task = this.eventHandler.getTaskByName(this.taskName);
-            
+
             fxmlLoader.<CommentViewerController>getController().setNewCommentMode(task);
-            
-            stage.setOnHidden(new EventHandler<WindowEvent>() {
+
+            stage.setOnHidden(new EventHandler<WindowEvent>()
+            {
                 @Override
                 public void handle(WindowEvent event)
                 {
-                    updateCommentsListView(task);
+                    updateCommentsListView();
                 }
-                
+
             });
         }
         catch (Exception e)
@@ -190,22 +225,33 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onRemoveComment(ActionEvent event)
     {
-        int commentId = this.commentsListView.getSelectionModel().getSelectedIndex();
-        CTask currentTask = this.eventHandler.getTaskByName(this.taskName);
-
-        if (currentTask == null)
+        if (this.commentsListView.getSelectionModel().isEmpty())
         {
-            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_OBJECT_NOT_FOUND);
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_COMMENT_NOT_SELECTED);
             return;
         }
 
-        currentTask.removeComment(commentId);
-        updateCommentsListView(currentTask);
+        int commentId = this.commentsListView.getSelectionModel().getSelectedIndex();
+
+        if (this.currentTask == null)
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_OBJECT_NOT_FOUND, this.taskName);
+            return;
+        }
+
+        this.currentTask.removeComment(commentId);
+        updateCommentsListView();
     }
 
     @FXML
     private void onViewComment(ActionEvent event)
     {
+        if (this.commentsListView.getSelectionModel().isEmpty())
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_COMMENT_NOT_SELECTED);
+            return;
+        }
+        
         try
         {
             CTask task = this.eventHandler.getTaskByName(this.taskName);
@@ -248,11 +294,11 @@ public class TaskViewerController implements Initializable
         stage.close();
     }
 
-    public void updateChildTasksListView(CTask currentTask)
+    public void updateChildTasksListView()
     {
         this.childTasksListView.getItems().clear();
 
-        for (Object obj : currentTask.getChildTasks())
+        for (Object obj : this.currentTask.getChildTasks())
         {
             CTask childTask = (CTask) obj;
 
@@ -260,13 +306,88 @@ public class TaskViewerController implements Initializable
         }
     }
 
-    private void updateCommentsListView(CTask currentTask)
+    private void updateCommentsListView()
     {
         this.commentsListView.getItems().clear();
 
-        for (CComment com : currentTask.getComments())
+        for (CComment com : this.currentTask.getComments())
         {
             this.commentsListView.getItems().add(String.valueOf(com.getId()));
         }
+    }
+
+    private void enableEditorMode(boolean value)
+    {
+        this.isEditorMode = value;
+
+        //view mode items
+        this.authorLabel.setVisible(!value);
+        this.taskNameLabel.setVisible(!value);
+        this.completeLevelLabel.setVisible(!value);
+        this.descriptionLabel.setVisible(!value);
+        this.parentTaskLabel.setVisible(!value);
+        this.viewChildTaskButton.setVisible(!value);
+        this.viewCommentButton.setVisible(!value);
+
+        //editor mode items
+        this.addChildTaskButton.setVisible(value);
+        this.removeChildTaskButton.setVisible(value);
+        this.addCommentButton.setVisible(value);
+        this.removeCommentButton.setVisible(value);
+
+        this.taskNameTextField.setVisible(value);
+        this.completeLevelTextField.setVisible(value);
+        this.taskDescriptionTextArea.setVisible(value);
+        this.selectParentTaskChoiceBox.setVisible(value);
+
+        if (value)
+        {
+            this.taskNameTextField.setText(this.taskName);
+            this.taskDescriptionTextArea.setText(this.currentTask.getTaskDescription());
+            this.completeLevelTextField.setText(String.valueOf(this.currentTask.getCompleteLevel()));
+        }
+    }
+
+    @FXML
+    private void onEditTask(ActionEvent event)
+    {
+        enableEditorMode(!this.isEditorMode);
+
+        CTask task = this.eventHandler.getTaskByName(this.taskName);
+
+        if (task == null)
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_OBJECT_NOT_FOUND, this.taskName);
+            return;
+        }
+
+        int completeLevel;
+        try
+        {
+            completeLevel = Integer.valueOf(this.completeLevelTextField.getText());
+
+            if (completeLevel < 0 || completeLevel > 100)
+            {
+                throw new Exception("--Bad complete level input--");
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC,
+                    "Užbaigtumo lygio įvestis turi būti sveikas skaičius (0-100)!\n");
+
+            return;
+        }
+
+        task.setCompleteLevel(completeLevel);
+
+        this.taskName = this.taskNameTextField.getText();
+        task.setTaskName(this.taskName);
+
+        task.setTaskDescription(this.taskDescriptionTextArea.getText());
+
+        updateViewInfo();
+        Main.getMainController().refreshTasksListView();
     }
 }
