@@ -64,19 +64,6 @@ public class CEventHandler
         COUNT
     }
 
-    public enum eEventType
-    {
-        EVENT_NONE,
-        EVENT_CREATE_PROJECT,
-        EVENT_CREATE_TASK,
-        EVENT_REMOVE_TASK,
-        EVENT_INSPECT_TASK,
-        EVENT_GET_ALL_TASKS_INFO,
-        EVENT_IMPORT_PROJECT,
-        EVENT_EXPORT_PROJECT,
-        COUNT
-    }
-
     public enum eInfoType
     {
         INFO_PROJECT_CREATED,
@@ -238,6 +225,7 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Task handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
     public void removeTask(String taskName)
     {
         if (!isWorkingProjectValid())
@@ -263,98 +251,6 @@ public class CEventHandler
         {
             handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, taskName);
         }
-    }
-
-    private void updateTaskCompleteness(CTask task)
-    {
-        print("\n-- Dabartinis uzduoties uzbaigtumo lygis : " + task.getCompleteLevel() + "%");
-        print("\n-- Iveskite nauja lygi (0-100) : ");
-
-        String input = getInput();
-
-        if (!isNumeric(input))
-        {
-            handleError(eErrorCode.ERROR_INPUT_EXPECTED_NUMERIC);
-            return;
-        }
-
-        int value = 0;
-
-        try
-        {
-            value = Integer.parseInt(input);
-        }
-        catch (Exception e)
-        {
-            handleError(eErrorCode.ERROR_BAD_INPUT, input);
-            return;
-        }
-
-        if (value >= 0 && value <= 100)
-        {
-            task.setCompleteLevel(value);
-            print("\n-- Uzduoties atlikimo lygis pakeistas sekmingai!\n");
-        }
-        else
-        {
-            handleError(eErrorCode.ERROR_BAD_INPUT, input);
-        }
-    }
-
-    private void addCommentToTask(CTask task)
-    {
-        print("\n-- Irasykite komentara : ");
-        String input = getInput();
-
-        CComment comment = new CComment(input);
-
-        print("\n-- Ar norite prisegti failu prie komentaro ? (y/n) : ");
-        input = getInput();
-
-        boolean attachFiles = input.equals("y");
-
-        while (attachFiles)
-        {
-            print("\n-- Irasykite failo pavadinima : ");
-            comment.attachFile(getInput());
-            print("\n-- Ar norite ivesti kita faila ? (y/n) : ");
-            input = getInput();
-            attachFiles = input.equals("y");
-        }
-
-        task.addComment(comment);
-        print("\n-- Komentaras sekmingai pridetas!");
-    }
-
-    private void updateTaskName(CTask task)
-    {
-        print("\n-- Dabartinis uzduoties pavadinimas : " + task.getTaskName());
-        print("\n-- Iveskite nauja pavadinima : ");
-        String newName = getInput();
-        task.setTaskName(newName);
-        print("\n-- Uzduoties pavadinimas sekmingai pakeistas!\n");
-    }
-
-    private void updateTaskDescription(CTask task)
-    {
-        print("\n-- Dabartinis uzduoties aprasymas : \n" + task.getTaskDescription());
-        print("\n-- Iveskite nauja aprasyma : ");
-        String newDesc = getInput();
-        task.setTaskDescription(newDesc);
-        print("\n-- Uzduoties aprasymas sekmingai pakeistas!\n");
-    }
-
-    private void createParentTask(CTask childTask)
-    {
-        if (childTask.hasParentTask())
-        {
-            print("\n-- Uzduotis jau turi tevine uzduoti !\n");
-            return;
-        }
-        CTask parentTask = createTask("", "", null);
-
-        childTask.setParentTask(parentTask);
-        parentTask.addChildTask(childTask);
     }
 
     public CTask createTask(String name, String description, CTask parentTask)
@@ -391,37 +287,10 @@ public class CEventHandler
         return task;
     }
 
-    private void printAllTasksInfo()
-    {
-        if (!isWorkingProjectValid())
-        {
-            handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
-            return;
-        }
-
-        if (this.workingProject.getTaskCount() == 0)
-        {
-            print("-- Nera uzduociu pasirinktame projekte!\n");
-            return;
-        }
-
-        for (Object obj : this.workingProject.getAllTasks())
-        {
-            CTask task = (CTask) obj;
-
-            if (task == null)
-            {
-                handleError(eErrorCode.ERROR_UNKNOWN);
-                return;
-            }
-
-            print(task.generateTaskInfoOutput());
-        }
-    }
-
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Project handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
     public boolean createProject(String projectName)
     {
         CProject project = new CProject();
