@@ -62,6 +62,6 @@
       <TextField fx:id="enterPathTextField" layoutX="333.0" layoutY="174.0" prefHeight="25.0" prefWidth="230.0" />
       <Button fx:id="addPathButton" layoutX="333.0" layoutY="207.0" mnemonicParsing="false" onAction="#onAddPath" prefHeight="25.0" prefWidth="230.0" text="Pridėti" />
       <Button fx:id="removePathButton" layoutX="333.0" layoutY="238.0" mnemonicParsing="false" onAction="#onRemoveSelectedPath" prefHeight="25.0" prefWidth="230.0" text="Panaikinti pasirinktą" />
-      <Button layoutX="117.0" layoutY="272.0" mnemonicParsing="false" onAction="#onEditComment" prefHeight="25.0" prefWidth="447.0" text="Redaguoti" />
+      <Button fx:id="editCommentButton" layoutX="117.0" layoutY="272.0" mnemonicParsing="false" onAction="#onEditComment" prefHeight="25.0" prefWidth="447.0" text="Redaguoti" />
    </children>
 </AnchorPane>

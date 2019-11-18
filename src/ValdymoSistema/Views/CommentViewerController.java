@@ -6,7 +6,11 @@
 package ValdymoSistema.Views;
 
 import ProjectData.CComment;
+import ProjectData.CTask;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,11 +21,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-
+import javafx.stage.Stage;
 
 public class CommentViewerController implements Initializable
 {
+
+    private String addCommentText = "Pridėti";
+
     private boolean isEditModeEnabled;
+    private boolean isNewCommentMode;
+    
+    private CTask newCommentTask;
+
     private CComment comment;
     @FXML
     private Label dateLabel;
@@ -43,22 +54,28 @@ public class CommentViewerController implements Initializable
     private Label enterPathTitleLabel;
     @FXML
     private TextField enterPathTextField;
+    @FXML
+    private Button editCommentButton;
 
-    
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         enableEditorMode(false);
+        this.isNewCommentMode = false;
+        this.comment = null;
+        this.newCommentTask = null;
     }
-    
+
     public void setComment(CComment comment)
     {
         this.comment = comment;
-        
+
         this.dateLabel.setText(this.comment.getDateString());
         this.commentLabel.setText(this.comment.getComment());
         
-        for(String file : comment.getAttachedFiles())
+        this.attachedFilesListView.getItems().clear();
+
+        for (String file : comment.getAttachedFiles())
         {
             this.attachedFilesListView.getItems().add(file);
         }
@@ -67,13 +84,28 @@ public class CommentViewerController implements Initializable
     @FXML
     private void onAddPath(ActionEvent event)
     {
+        String path = this.enterPathTextField.getText();
+        this.attachedFilesListView.getItems().add(path);
     }
 
     @FXML
     private void onRemoveSelectedPath(ActionEvent event)
     {
+        if(!this.attachedFilesListView.getSelectionModel().isEmpty())
+        {
+            int id = this.attachedFilesListView.getSelectionModel().getSelectedIndex();
+            this.attachedFilesListView.getItems().remove(id);
+        }
     }
-    
+
+    public void setNewCommentMode(CTask commentHolder)
+    {
+        this.isNewCommentMode = true;
+        this.editCommentButton.setText(this.addCommentText);
+        enableEditorMode(true);
+        this.newCommentTask = commentHolder;
+    }
+
     private void enableEditorMode(boolean enable)
     {
         this.isEditModeEnabled = enable;
@@ -84,7 +116,7 @@ public class CommentViewerController implements Initializable
         this.enterPathTextField.setVisible(enable);
         this.commentTextArea.setVisible(enable);
         this.enterPathTitleLabel.setVisible(enable);
-        
+
         //viewer items
         this.authorLabel.setVisible(!enable);
         this.commentLabel.setVisible(!enable);
@@ -94,6 +126,42 @@ public class CommentViewerController implements Initializable
     @FXML
     private void onEditComment(ActionEvent event)
     {
-        enableEditorMode(!this.isEditModeEnabled);
+        
+        if(!this.isNewCommentMode && !this.isEditModeEnabled)
+        {
+            enableEditorMode(!this.isEditModeEnabled);
+            return;
+        }
+        
+        String commentText = this.commentTextArea.getText();
+
+        if (this.isNewCommentMode)
+        {
+            this.comment = new CComment(commentText);
+        }
+        
+        this.comment.clearAttachedFiles();
+        
+        for (String file : this.attachedFilesListView.getItems())
+        {
+            this.comment.attachFile(file);
+        }
+        
+        if (this.isNewCommentMode)
+        {
+            this.newCommentTask.addComment(this.comment);
+            close();
+        }
+        else
+        {
+            setComment(this.comment);
+            enableEditorMode(!this.isEditModeEnabled);
+        }
+    }
+
+    private void close()
+    {
+        Stage stage = (Stage) this.editCommentButton.getScene().getWindow();
+        stage.close();
     }
 }
