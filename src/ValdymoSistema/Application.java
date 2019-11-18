@@ -15,19 +15,10 @@ public class Application
 
     public static void main(String[] args) throws FileNotFoundException, IOException, ParseException
     {
-        Initialize();
-        
-        boolean bExit = false;
-        
-        while (!bExit)
-        {
-            eventHandler.printMenu();
-            
-            eventHandler.mainEvent();
-        }     
+        Initialize();   
     }
     
-    public static void Initialize() throws FileNotFoundException
+    public static void Initialize() throws FileNotFoundException, IOException, ParseException
     {
        eventHandler = new CEventHandler();
     }

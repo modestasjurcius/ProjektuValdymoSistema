@@ -25,12 +25,14 @@ public class CProject
     private ArrayList projectTasks;
     
     private String projectName;
+    private String projectFile;
     
     public CProject()
     {   
         this.projectWorkers = new ArrayList();
         this.projectTasks = new ArrayList();
         this.projectName = "";
+        this.projectFile = "";
     }
     
     public void setOwner(CUser user)
@@ -46,6 +48,7 @@ public class CProject
     public void setProjectName(String name)
     {
         this.projectName = name;
+        this.projectFile = name + ".json";
     }
     
     public void addTask(CTask task)
@@ -63,6 +66,11 @@ public class CProject
         {
             return this.projectName;
         }
+    }
+    
+    public String getProjectSaveFile()
+    {
+        return this.projectFile;
     }
     
     public int getTaskCount()
@@ -134,6 +142,7 @@ public class CProject
             }
 
             this.projectName = (String) jsonData.get("Name");
+            this.projectFile = this.projectName + ".json";
 
             JSONArray tasks = (JSONArray) jsonData.get("Tasks");
             
@@ -182,16 +191,10 @@ public class CProject
         }
         
         childTask.setParentTask(parentTask);
-        parentTask.addChildTask(childTask);
     }
     
-    public void exportData(String fileName)
+    public void exportData()
     {
-        if(!fileName.endsWith(".json"))
-        {
-            fileName += ".json";
-        }
-        
         JSONObject data = new JSONObject();
     
         data.put("Name", this.projectName);
@@ -206,7 +209,7 @@ public class CProject
         
         data.put("Tasks", tasks);
 
-        try (FileWriter file = new FileWriter((fileName))) {
+        try (FileWriter file = new FileWriter((this.projectFile))) {
             file.write(data.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();

@@ -13,8 +13,9 @@ import org.json.simple.JSONObject;
 
 public class CComment
 {
-    private ArrayList attachedFilesPaths;
+    private ArrayList<String> attachedFilesPaths;
     private String comment;
+    private int id;
     
     private Date dateOfComment;
     private String dateString;
@@ -22,8 +23,8 @@ public class CComment
     public CComment(String comment)
     {
         this.comment = comment;
-        
-        this.attachedFilesPaths = new ArrayList();
+        this.id = -1;
+        this.attachedFilesPaths = new ArrayList<String>();
         
         Calendar calendar = Calendar.getInstance();
         this.dateOfComment = calendar.getTime();
@@ -34,7 +35,17 @@ public class CComment
 
     CComment()
     {
-        this.attachedFilesPaths = new ArrayList();
+        this.attachedFilesPaths = new ArrayList<String>();
+    }
+    
+    public int getId()
+    {
+        return this.id;
+    }
+    
+    public void setId(int id)
+    {
+        this.id = id;
     }
     
     public void setComment(String newComment)
@@ -42,11 +53,26 @@ public class CComment
         this.comment = newComment;
     }
     
+    public String getComment()
+    {
+        return this.comment;
+    }
+    
     public boolean attachFile(String path)
     {     
         this.attachedFilesPaths.add(path);
         
         return true;
+    }
+    
+    public void clearAttachedFiles()
+    {
+        this.attachedFilesPaths.clear();
+    }
+    
+    public ArrayList<String> getAttachedFiles()
+    {
+        return this.attachedFilesPaths;
     }
     
     public boolean removeFile(String path)
@@ -71,17 +97,23 @@ public class CComment
         this.dateString = formatter.format(this.dateOfComment); 
     }
     
+    public String getDateString()
+    {
+        return this.dateString;
+    }
+    
     public String generateCommentOutput()
     {
         String out = "";
         
-        out += "\n~~Komentaras : " + this.comment + "\n";
+        out += "\n~~Komentaro ID: " + this.id + "\n";
+        out += "~~Komentaras : " + this.comment + "\n";
         out += "~~Data : " + this.dateString + "\n";
         out += "~~Prisegti failai : ";
         
         if(this.attachedFilesPaths.isEmpty())
         {
-            out += "Nera";
+            out += "Nera\n";
         }
         else
         {
@@ -101,6 +133,7 @@ public class CComment
         try
         {
             this.comment = (String) data.get("Comment");
+            this.id = ((Long) data.get("ID")).intValue();
             setDate(new Date((long) data.get("Date")));
 
             JSONArray attachedFiles = (JSONArray) data.get("AttachedFiles");
@@ -124,6 +157,7 @@ public class CComment
         JSONObject data = new JSONObject();
         
         data.put("Comment", this.comment);
+        data.put("ID", this.id);
         data.put("Date", this.dateOfComment.getTime());
         
         if(this.attachedFilesPaths.size() > 0)
