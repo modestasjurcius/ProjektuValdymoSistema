@@ -8,9 +8,6 @@ package ValdymoSistema.Views;
 import ProjectData.CComment;
 import ProjectData.CTask;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -86,6 +83,7 @@ public class CommentViewerController implements Initializable
     {
         String path = this.enterPathTextField.getText();
         this.attachedFilesListView.getItems().add(path);
+        this.enterPathTextField.clear();
     }
 
     @FXML
