@@ -109,7 +109,7 @@ public class MainController implements Initializable
             {
                 fxmlLoader.<ProjectImporterDialogController>getController().setValidImportMode(false);
             }
-            
+
             stage.show();
         }
         catch (Exception e)
@@ -220,6 +220,12 @@ public class MainController implements Initializable
     @FXML
     private void exportPojectData(ActionEvent event)
     {
+        if (!this.eventHandler.isWorkingProjectValid())
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+
         try
         {
             openView("src/ValdymoSistema/Views/ExportProjectDialog.fxml");
