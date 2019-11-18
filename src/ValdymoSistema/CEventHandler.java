@@ -346,6 +346,11 @@ public class CEventHandler
 
         return this.workingProject.getProjectSaveFile();
     }
+    
+    public CProject getWorkingProject()
+    {
+        return this.workingProject;
+    }
 
     public void exportWorkingProject()
     {

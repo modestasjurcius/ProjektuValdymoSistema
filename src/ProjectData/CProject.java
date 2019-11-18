@@ -191,7 +191,6 @@ public class CProject
         }
         
         childTask.setParentTask(parentTask);
-        parentTask.addChildTask(childTask);
     }
     
     public void exportData()
