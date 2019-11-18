@@ -158,6 +158,33 @@ public class TaskViewerController implements Initializable
     @FXML
     private void onAddComment(ActionEvent event)
     {
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/CommentViewer.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/CommentViewer.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root1));
+            stage.show();
+            
+            CTask task = this.eventHandler.getTaskByName(this.taskName);
+            
+            fxmlLoader.<CommentViewerController>getController().setNewCommentMode(task);
+            
+            stage.setOnHidden(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event)
+                {
+                    updateCommentsListView(task);
+                }
+                
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @FXML
