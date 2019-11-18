@@ -126,14 +126,14 @@ public class MainController implements Initializable
         }
         return this.selectedTaskName;
     }
-    
+
     public void selectTask(String taskName)
     {
         try
         {
             this.tasksListView.getSelectionModel().select(taskName);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }
@@ -164,6 +164,16 @@ public class MainController implements Initializable
         this.tasksListView.getItems().clear();
     }
 
+    public void refreshTasksListView()
+    {
+        this.tasksListView.getItems().clear();
+
+        for (CTask task : this.eventHandler.getAllWorkingProjectTasks())
+        {
+            this.tasksListView.getItems().add(task.getTaskName());
+        }
+    }
+
     @FXML
     private void createTaskAction(ActionEvent event) throws IOException
     {
@@ -181,7 +191,7 @@ public class MainController implements Initializable
     {
         openTaskViewer();
     }
-    
+
     public void openTaskViewer() throws IOException
     {
         openView("src/ValdymoSistema/Views/TaskViewer.fxml");
