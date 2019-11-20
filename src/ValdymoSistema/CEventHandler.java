@@ -5,6 +5,7 @@ package ValdymoSistema;
 
 import ProjectData.CProject;
 import ProjectData.CTask;
+import UserData.CUser;
 import static ValdymoSistema.Main.getMainController;
 import ValdymoSistema.Views.ErrorDialogController;
 import ValdymoSistema.Views.SuccessDialogController;
@@ -29,6 +30,8 @@ import org.json.simple.parser.ParseException;
 public class CEventHandler
 {
     private CProject workingProject;
+    private CDataBaseController dataBaseController;
+    private CUser currentUser;
 
     private String strMenu;
     private String pathToMenu;
@@ -75,6 +78,9 @@ public class CEventHandler
         this.strMenu = "";
 
         this.savedProjectList = new Hashtable<>();
+        
+        this.dataBaseController = new CDataBaseController();
+        this.currentUser = null;
 
         parseMenuFiles();
         parseSavedProjects();
@@ -524,5 +530,22 @@ public class CEventHandler
     public Map getSavedProjects()
     {
         return this.savedProjectList;
+    }
+    
+    public CDataBaseController getDataBaseController()
+    {
+        return this.dataBaseController;
+    }
+    
+    public CUser getCurrentUser()
+    {
+        return this.currentUser;
+    }
+    
+    public void setCurrentUser(CUser user)
+    {
+        this.currentUser = user;
+        
+        Main.getMainController().setUserName(this.currentUser.getUserName());
     }
 }
