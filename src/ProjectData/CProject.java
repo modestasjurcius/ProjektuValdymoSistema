@@ -35,6 +35,11 @@ public class CProject
         this.projectFile = "";
     }
     
+    public String getName()
+    {
+        return this.projectName;
+    }
+    
     public void setOwner(CUser user)
     {
         this.projectOwner = user;
