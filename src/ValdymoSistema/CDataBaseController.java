@@ -4,13 +4,17 @@
  */
 package ValdymoSistema;
 
+import ProjectData.CProject;
 import UserData.CUser;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class CDataBaseController
 {
@@ -71,7 +75,6 @@ public class CDataBaseController
     {
         try
         {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection conn = DriverManager.getConnection(this.db_url, this.user, this.pass);
 
             return conn;
@@ -121,7 +124,7 @@ public class CDataBaseController
 
         return map;
     }
-    
+
     private void parseSavedProjectsInMap(Map map, ResultSet rs)
     {
         try
@@ -182,20 +185,110 @@ public class CDataBaseController
             Connection conn = getDBConnection();
             String sql = "SELECT * FROM projects WHERE project_name = ?";
             PreparedStatement prep = conn.prepareStatement(sql);
-            
+
             prep.setString(1, projectName);
-            
+
             ResultSet rs = prep.executeQuery();
-            while(rs.next())
+            while (rs.next())
             {
-               ret = rs.getString("project_file");
+                ret = rs.getString("project_file");
+            }
+
+            conn.close();
+            prep.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public ObservableList<String> getProjectWorkers(CProject proj)
+    {
+        ObservableList list = FXCollections.observableArrayList();
+        int project_id = getProjectIdByName(proj.getName());
+
+        if (project_id < 0)
+        {
+            return list;
+        }
+
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT * FROM projects_workers WHERE project_id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            prep.setInt(1, project_id);
+            ResultSet rs = prep.executeQuery();
+
+            while (rs.next())
+            {
+                int user_id = rs.getInt("user_id");
+                CUser worker = getUserById(user_id);
+
+                if (worker != null)
+                {
+                    list.add(worker.getUserName());
+                }
             }
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-        
-        return ret;
+
+        return list;
+    }
+
+    private int getProjectIdByName(String name)
+    {
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT project_id FROM projects WHERE project_name = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            prep.setString(1, name);
+            ResultSet rs = prep.executeQuery();
+
+            if (rs.next())
+            {
+                return rs.getInt("project_id");
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return -1;
+    }
+
+    private CUser getUserById(int id)
+    {
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT * FROM users WHERE id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            ResultSet rs = prep.executeQuery();
+
+            if (rs.next())
+            {
+                String name = rs.getString("login");
+
+                conn.close();
+
+                return new CUser(name, id);
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return null;
     }
 }
