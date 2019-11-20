@@ -33,16 +33,6 @@ public class CEventHandler
     private CDataBaseController dataBaseController;
     private CUser currentUser;
 
-    private String strMenu;
-    private String pathToMenu;
-    private String strUpdateMenu;
-    private String pathToUpdateMenu;
-    private String pathToSavedProjects;
-    
-    private Map<String, String> savedProjectList;
-
-    private static Scanner inputScanner;
-
     public enum eErrorCode
     {
         ERROR_OBJECT_NOT_FOUND,
@@ -69,21 +59,8 @@ public class CEventHandler
 
     public CEventHandler() throws FileNotFoundException, IOException, ParseException
     {
-        this.inputScanner = new Scanner(System.in);
-
-        this.pathToSavedProjects = "SavedProjects.json";
-        this.pathToMenu = "ConsoleMenuInfo.txt";
-        this.pathToUpdateMenu = "TaskUpdateMenuInfo.txt";
-        this.strUpdateMenu = "";
-        this.strMenu = "";
-
-        this.savedProjectList = new Hashtable<>();
-        
         this.dataBaseController = new CDataBaseController();
         this.currentUser = null;
-
-        parseMenuFiles();
-        parseSavedProjects();
     }
 
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
@@ -288,8 +265,6 @@ public class CEventHandler
         CProject project = new CProject();
         project.setProjectName(projectName);
 
-        //print("\n-- Iveskite projekto pavadinima : ");
-        //String name = getInput();
         onWorkingProjectChange(project);
 
         print("\n-- Projektas pavadinimu : " + projectName + " - Sekmingai sukurtas!");
@@ -302,12 +277,9 @@ public class CEventHandler
 
     public void importProject(String projectName) throws IOException, FileNotFoundException, ParseException
     {
-        //print("\n-- Iveskite failo pavadinima : ");
-        //String input = getInput();
-
         CProject project = new CProject();
 
-        String projectFile = this.savedProjectList.get(projectName);
+        String projectFile = this.dataBaseController.getProjectSaveFile(projectName);
 
         if (project.importData(projectFile))
         {
@@ -369,143 +341,12 @@ public class CEventHandler
 
     public void saveWorkingProject()
     {
-        this.savedProjectList.put(this.workingProject.getProjectName(), this.workingProject.getProjectSaveFile());
-        exportSavedProjects();
+        //this.savedProjectList.put(this.workingProject.getProjectName(), this.workingProject.getProjectSaveFile());
     }
-
-    private void exportSavedProjects()
-    {
-        try
-        {
-            JSONObject json = new JSONObject();
-            JSONArray arr = new JSONArray();
-
-            for (String name : this.savedProjectList.keySet())
-            {
-                JSONObject obj = new JSONObject();
-                obj.put("Name", name);
-                obj.put("File", this.savedProjectList.get(name));
-                arr.add(obj);
-            }
-
-            json.put("Projects", arr);
-
-            FileWriter file = new FileWriter(this.pathToSavedProjects);
-            file.write(json.toJSONString());
-            file.flush();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-
-    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    ///-------- Printer methods
-    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    public void printMenu()
-    {
-        print(this.strMenu);
-
-        String workingProjectInfo = "\n===>>>> Darbinis projektas : ";
-
-        if (this.workingProject == null)
-        {
-            workingProjectInfo += "Nepasirinktas\n";
-        }
-        else
-        {
-            String projectName = this.workingProject.getProjectName();
-            if (!projectName.isEmpty())
-            {
-                workingProjectInfo += projectName + "\n";
-            }
-            else
-            {
-                workingProjectInfo += "Be pavadinimo \n";
-            }
-        }
-
-        print(workingProjectInfo);
-    }
-
-    public void printTaskUpdateMenu()
-    {
-        print("\n" + this.strUpdateMenu);
-    }
-
-    private void print(String str)
-    {
-        System.out.print(str);
-    }
-
-    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    ///-------- Parsing methods
-    ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    private void parseMenuFiles() throws FileNotFoundException
-    {
-        File file = new File(this.pathToMenu);
-        Scanner sc = new Scanner(file);
-
-        while (sc.hasNextLine())
-        {
-            this.strMenu += sc.nextLine();
-            this.strMenu += "\n";
-        }
-
-        file = new File(this.pathToUpdateMenu);
-        sc = new Scanner(file);
-        while (sc.hasNextLine())
-        {
-            this.strUpdateMenu += sc.nextLine();
-            this.strUpdateMenu += "\n";
-        }
-    }
-
-    private void parseSavedProjects() throws FileNotFoundException, IOException, ParseException
-    {
-        try
-        {
-            FileReader reader = new FileReader(this.pathToSavedProjects);
-
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonData = (JSONObject) jsonParser.parse(reader);
-
-            JSONArray projects = (JSONArray) jsonData.get("Projects");
-
-            for (Object obj : projects)
-            {
-                JSONObject project = (JSONObject) obj;
-
-                if (project.containsKey("Name") && project.containsKey("File"))
-                {
-                    String name = (String) project.get("Name");
-                    String file = (String) project.get("File");
-                    this.savedProjectList.put(name, file);
-                }
-                else
-                {
-                    print("[ERROR] Projects parsing error");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-           ex.printStackTrace();
-        }
-    }
-
+    
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Utils
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    public String getInput()
-    {
-        if (inputScanner != null)
-        {
-            return inputScanner.nextLine();
-        }
-        return null;
-    }
 
     public CTask getTaskByName(String taskName)
     {
@@ -522,14 +363,9 @@ public class CEventHandler
         return this.workingProject != null;
     }
 
-    public boolean hasSavedProjects()
-    {
-        return !this.savedProjectList.isEmpty();
-    }
-
     public Map getSavedProjects()
     {
-        return this.savedProjectList;
+        return this.dataBaseController.getSavedProjects(this.currentUser);
     }
     
     public CDataBaseController getDataBaseController()
@@ -547,5 +383,10 @@ public class CEventHandler
         this.currentUser = user;
         
         Main.getMainController().setUserName(this.currentUser.getUserName());
+    }
+    
+    private void print(String value)
+    {
+        System.out.println(value);
     }
 }
