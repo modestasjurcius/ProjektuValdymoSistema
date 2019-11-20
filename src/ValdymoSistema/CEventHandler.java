@@ -4,7 +4,6 @@
 package ValdymoSistema;
 
 import ProjectData.CProject;
-import ProjectData.CProjectController;
 import ProjectData.CTask;
 import static ValdymoSistema.Main.getMainController;
 import ValdymoSistema.Views.ErrorDialogController;
@@ -29,9 +28,6 @@ import org.json.simple.parser.ParseException;
 
 public class CEventHandler
 {
-
-    private CProjectController projectController;
-
     private CProject workingProject;
 
     private String strMenu;
@@ -70,7 +66,6 @@ public class CEventHandler
 
     public CEventHandler() throws FileNotFoundException, IOException, ParseException
     {
-        this.projectController = new CProjectController();
         this.inputScanner = new Scanner(System.in);
 
         this.pathToSavedProjects = "SavedProjects.json";
