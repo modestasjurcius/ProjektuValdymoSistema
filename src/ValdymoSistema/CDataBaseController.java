@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Hashtable;
+import java.util.Map;
 
 public class CDataBaseController
 {
@@ -80,5 +82,120 @@ public class CDataBaseController
         }
 
         return null;
+    }
+
+    public Map getSavedProjects(CUser user)
+    {
+        Map map = new Hashtable<>();
+
+        if (user == null)
+        {
+            return map;
+        }
+
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SElECT * FROM projects_workers WHERE user_id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            prep.setInt(1, user.getId());
+            ResultSet rs = prep.executeQuery();
+
+            parseSavedProjectsInMap(map, rs);
+
+            sql = "SElECT * FROM projects_owners WHERE user_id = ?";
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, user.getId());
+            rs = prep.executeQuery();
+
+            parseSavedProjectsInMap(map, rs);
+
+            conn.close();
+            prep.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return map;
+    }
+    
+    private void parseSavedProjectsInMap(Map map, ResultSet rs)
+    {
+        try
+        {
+            while (rs.next())
+            {
+                int project_id = rs.getInt("project_id");
+
+                String name = getProjectStringValue(project_id, "project_name");
+                String file = getProjectStringValue(project_id, "project_file");
+
+                if (name != null && file != null && !map.containsKey(name))
+                {
+                    map.put(name, file);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    private String getProjectStringValue(int proj_id, String column)
+    {
+        String ret = null;
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT * FROM projects WHERE project_id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+
+            prep.setInt(1, proj_id);
+
+            ResultSet rs = prep.executeQuery();
+
+            while (rs.next())
+            {
+                ret = rs.getString(column);
+            }
+
+            conn.close();
+            prep.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return ret;
+    }
+
+    public String getProjectSaveFile(String projectName)
+    {
+        String ret = null;
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT * FROM projects WHERE project_name = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            
+            prep.setString(1, projectName);
+            
+            ResultSet rs = prep.executeQuery();
+            while(rs.next())
+            {
+               ret = rs.getString("project_file");
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        
+        return ret;
     }
 }
