@@ -5,12 +5,14 @@
  */
 package ValdymoSistema;
 
+import ProjectData.CProject;
 import ProjectData.CTask;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.Views.ProjectImporterDialogController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -49,6 +51,8 @@ public class MainController implements Initializable
     private Button taskRemoverButton;
     @FXML
     private Label userNameLabel;
+    @FXML
+    private ListView<String> workersListView;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -179,6 +183,19 @@ public class MainController implements Initializable
         {
             this.tasksListView.getItems().add(task.getTaskName());
         }
+    }
+    
+    public void fillProjectWorkersList()
+    {
+        CProject proj = this.eventHandler.getWorkingProject();
+        if(proj == null)
+        {
+            return;
+        }
+        
+        ObservableList<String> projectWorkers = this.eventHandler.getDataBaseController().getProjectWorkers(proj);
+        
+        this.workersListView.setItems(projectWorkers);
     }
 
     @FXML
