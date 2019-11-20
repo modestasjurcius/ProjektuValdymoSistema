@@ -1,5 +1,5 @@
 {
-    "Name": "Projektas1",
+    "Name": "Test",
     "Tasks": [
         {
             "TaskName": "Uzduotis",
@@ -24,13 +24,6 @@
                 }
             ]
         },
-        {
-            "TaskName": "Vaikine",
-            "CompleteLevel": 30,
-            "ID" : 1,
-            "Description": "Vaikines aprasymas",
-            "ParentTask": "Uzduotis"
-        }
         {
             "TaskName": "Tevine",
             "CompleteLevel": 10,
