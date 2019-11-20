@@ -11,20 +11,13 @@ import ValdymoSistema.Views.ErrorDialogController;
 import ValdymoSistema.Views.SuccessDialogController;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.Scanner;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class CEventHandler
@@ -260,6 +253,7 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Project handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
+    
     public boolean createProject(String projectName)
     {
         CProject project = new CProject();
@@ -296,12 +290,14 @@ public class CEventHandler
     private void onWorkingProjectChange(CProject project)
     {
         this.workingProject = project;
-
+        
         MainController controller = getMainController();
 
         controller.setWorkingProjectName(project.getProjectName());
 
         controller.refreshTasksListView();
+        
+        controller.fillProjectWorkersList();
     }
 
     public ArrayList<CTask> getAllWorkingProjectTasks()
