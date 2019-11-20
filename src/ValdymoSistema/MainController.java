@@ -11,6 +11,7 @@ import ValdymoSistema.Views.ProjectImporterDialogController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -102,10 +103,12 @@ public class MainController implements Initializable
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
+            
+            Map savedProjects = this.eventHandler.getSavedProjects();
 
-            if (this.eventHandler.hasSavedProjects())
+            if (!savedProjects.isEmpty())
             {
-                fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(eventHandler.getSavedProjects());
+                fxmlLoader.<ProjectImporterDialogController>getController().setSavedProjectList(savedProjects);
             }
             else
             {
