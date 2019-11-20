@@ -46,6 +46,8 @@ public class MainController implements Initializable
     private Button taskViewerButton;
     @FXML
     private Button taskRemoverButton;
+    @FXML
+    private Label userNameLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -246,5 +248,15 @@ public class MainController implements Initializable
         }
 
         this.eventHandler.removeTask(this.selectedTaskName);
+    }
+
+    @FXML
+    private void onCheckUser(ActionEvent event)
+    {
+    }
+    
+    public void setUserName(String name)
+    {
+        this.userNameLabel.setText(name);
     }
 }
