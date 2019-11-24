@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -106,7 +106,7 @@ public class CDataBaseController
 
             parseSavedProjectsInMap(map, rs);
 
-            sql = "SElECT * FROM projects_owners WHERE user_id = ?";
+            sql = "SElECT * FROM projects WHERE project_owner_id = ?";
             prep = conn.prepareStatement(sql);
             prep.setInt(1, user.getId());
             rs = prep.executeQuery();
@@ -245,6 +245,8 @@ public class CDataBaseController
 
     private int getProjectIdByName(String name)
     {
+        int project_id = -1;
+        
         try
         {
             Connection conn = getDBConnection();
@@ -252,17 +254,21 @@ public class CDataBaseController
             PreparedStatement prep = conn.prepareStatement(sql);
             prep.setString(1, name);
             ResultSet rs = prep.executeQuery();
-
+            
             if (rs.next())
             {
-                return rs.getInt("project_id");
+                project_id = rs.getInt("project_id");
             }
+            
+            conn.close();
+            prep.close();
+            rs.close();
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-        return -1;
+        return project_id;
     }
 
     private CUser getUserById(int id)
@@ -274,13 +280,17 @@ public class CDataBaseController
             PreparedStatement prep = conn.prepareStatement(sql);
             prep.setInt(1, id);
             ResultSet rs = prep.executeQuery();
-
+            
+            String name;
+            
             if (rs.next())
             {
-                String name = rs.getString("login");
+                name = rs.getString("login");
 
                 conn.close();
-
+                prep.close();
+                rs.close();
+                
                 return new CUser(name, id);
             }
         }
@@ -290,5 +300,31 @@ public class CDataBaseController
         }
 
         return null;
+    }
+    
+    public void createProject(CUser owner, String projectName, String projectFile)
+    {
+        try
+        {
+            int owner_id = owner.getId();
+            
+            Connection conn = getDBConnection();
+            String sql = "INSERT INTO projects " + "VALUES (?, ?, ?, ?)";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            
+            prep.setInt(1, 0); //id is auto-increment
+            prep.setString(2, projectName);
+            prep.setString(3, projectFile);
+            prep.setInt(4, owner_id);
+            
+            prep.executeUpdate();
+            
+            conn.close();
+            prep.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 }
