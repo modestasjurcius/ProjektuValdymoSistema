@@ -9,6 +9,7 @@ import ProjectData.CProject;
 import ProjectData.CTask;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.Views.ProjectImporterDialogController;
+import ValdymoSistema.Views.UserViewerController;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -107,7 +108,7 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
             
-            Map savedProjects = this.eventHandler.getSavedProjects();
+            Map savedProjects = this.eventHandler.getSavedProjects(true, true);
 
             if (!savedProjects.isEmpty())
             {
@@ -272,6 +273,23 @@ public class MainController implements Initializable
     @FXML
     private void onCheckUser(ActionEvent event)
     {
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/UserViewer.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/UserViewer.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root1));
+
+            fxmlLoader.<UserViewerController>getController().setUser(this.eventHandler.getCurrentUser());
+
+            stage.show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public void setUserName(String name)
