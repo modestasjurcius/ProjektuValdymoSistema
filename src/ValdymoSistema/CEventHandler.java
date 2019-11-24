@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -366,9 +367,14 @@ public class CEventHandler
         return this.workingProject != null;
     }
 
-    public Map getSavedProjects()
+    public Map getSavedProjects(boolean workingProjects, boolean owningProjects)
     {
-        return this.dataBaseController.getSavedProjects(this.currentUser);
+        if(this.currentUser != null)
+        {
+           return this.dataBaseController.getSavedProjects(this.currentUser, workingProjects, owningProjects); 
+        }
+        
+        return new Hashtable<>();
     }
     
     public CDataBaseController getDataBaseController()
