@@ -93,7 +93,7 @@ public class CDataBaseController
         return null;
     }
 
-    public Map getSavedProjects(CUser user)
+    public Map getSavedProjects(CUser user, boolean workingProjects, boolean owningProjects)
     {
         Map map = new Hashtable<>();
 
@@ -105,19 +105,30 @@ public class CDataBaseController
         try
         {
             Connection conn = getDBConnection();
-            String sql = "SElECT * FROM projects_workers WHERE user_id = ?";
-            PreparedStatement prep = conn.prepareStatement(sql);
-            prep.setInt(1, user.getId());
-            ResultSet rs = prep.executeQuery();
 
-            parseSavedProjectsInMap(map, rs);
+            String sql = "";
+            PreparedStatement prep = null;
+            ResultSet rs = null;
 
-            sql = "SElECT * FROM projects WHERE project_owner_id = ?";
-            prep = conn.prepareStatement(sql);
-            prep.setInt(1, user.getId());
-            rs = prep.executeQuery();
+            if (workingProjects)
+            {
+                sql = "SElECT * FROM projects_workers WHERE user_id = ?";
+                prep = conn.prepareStatement(sql);
+                prep.setInt(1, user.getId());
+                rs = prep.executeQuery();
 
-            parseSavedProjectsInMap(map, rs);
+                parseSavedProjectsInMap(map, rs);
+            }
+
+            if (owningProjects)
+            {
+                sql = "SElECT * FROM projects WHERE project_owner_id = ?";
+                prep = conn.prepareStatement(sql);
+                prep.setInt(1, user.getId());
+                rs = prep.executeQuery();
+
+                parseSavedProjectsInMap(map, rs);
+            }
 
             conn.close();
             prep.close();
@@ -252,7 +263,7 @@ public class CDataBaseController
     private int getProjectIdByName(String name)
     {
         int project_id = -1;
-        
+
         try
         {
             Connection conn = getDBConnection();
@@ -260,12 +271,12 @@ public class CDataBaseController
             PreparedStatement prep = conn.prepareStatement(sql);
             prep.setString(1, name);
             ResultSet rs = prep.executeQuery();
-            
+
             if (rs.next())
             {
                 project_id = rs.getInt("project_id");
             }
-            
+
             conn.close();
             prep.close();
             rs.close();
@@ -286,18 +297,18 @@ public class CDataBaseController
             PreparedStatement prep = conn.prepareStatement(sql);
             prep.setInt(1, id);
             ResultSet rs = prep.executeQuery();
-            
+
             if (rs.next())
             {
                 String name = rs.getString("login");
                 boolean isSingleUser = rs.getByte("is_single_user") != 0;
                 String fullName = rs.getString("full_user_name");
                 String contacts = rs.getString("user_contact");
-                
+
                 conn.close();
                 prep.close();
                 rs.close();
-                
+
                 return new CUser(name, id, isSingleUser, fullName, contacts);
             }
         }
@@ -308,24 +319,24 @@ public class CDataBaseController
 
         return null;
     }
-    
+
     public void createProject(CUser owner, String projectName, String projectFile)
     {
         try
         {
             int owner_id = owner.getId();
-            
+
             Connection conn = getDBConnection();
             String sql = "INSERT INTO projects " + "VALUES (?, ?, ?, ?)";
             PreparedStatement prep = conn.prepareStatement(sql);
-            
+
             prep.setInt(1, 0); //id is auto-increment
             prep.setString(2, projectName);
             prep.setString(3, projectFile);
             prep.setInt(4, owner_id);
-            
+
             prep.executeUpdate();
-            
+
             conn.close();
             prep.close();
         }
