@@ -258,8 +258,15 @@ public class CEventHandler
     {
         CProject project = new CProject();
         project.setProjectName(projectName);
-
+        
+        if(this.currentUser != null)
+        {
+           this.dataBaseController.createProject(this.currentUser, projectName, projectName + ".json"); 
+        }
+        
         onWorkingProjectChange(project);
+        
+        exportWorkingProject();
 
         print("\n-- Projektas pavadinimu : " + projectName + " - Sekmingai sukurtas!");
         print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
