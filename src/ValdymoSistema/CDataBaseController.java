@@ -49,14 +49,20 @@ public class CDataBaseController
 
             int id = 0;
             String name = "";
+            String fullName = "";
+            String contacts = "";
+            boolean isSingleUser = false;
 
             while (rs.next())
             {
                 id = rs.getInt("id");
                 name = rs.getString("login");
+                isSingleUser = rs.getByte("is_single_user") != 0;
+                fullName = rs.getString("full_user_name");
+                contacts = rs.getString("user_contact");
             }
 
-            CUser user = new CUser(name, id);
+            CUser user = new CUser(name, id, isSingleUser, fullName, contacts);
 
             conn.close();
             prep.close();
@@ -281,17 +287,18 @@ public class CDataBaseController
             prep.setInt(1, id);
             ResultSet rs = prep.executeQuery();
             
-            String name;
-            
             if (rs.next())
             {
-                name = rs.getString("login");
-
+                String name = rs.getString("login");
+                boolean isSingleUser = rs.getByte("is_single_user") != 0;
+                String fullName = rs.getString("full_user_name");
+                String contacts = rs.getString("user_contact");
+                
                 conn.close();
                 prep.close();
                 rs.close();
                 
-                return new CUser(name, id);
+                return new CUser(name, id, isSingleUser, fullName, contacts);
             }
         }
         catch (Exception ex)
