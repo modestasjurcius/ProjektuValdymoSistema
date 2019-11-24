@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" maxWidth="-Infinity" minWidth="400.0" prefHeight="400.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.UserViewerController">
+   <children>
+      <Label layoutX="66.0" layoutY="14.0" prefHeight="24.0" prefWidth="117.0" text="Jungimosi vardas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="singleUserNameLabel" layoutX="32.0" layoutY="38.0" prefHeight="20.0" prefWidth="151.0" text="Pilnas vartotojo vardas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="companyUserNameLabel" layoutX="6.0" layoutY="38.0" prefHeight="20.0" prefWidth="177.0" text="Pilnas įmonės pavadinimas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="singleUserContacs" layoutX="50.0" layoutY="64.0" prefHeight="20.0" prefWidth="133.0" text="Vartotojo kontaktai :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="companyContactLabel" layoutX="66.0" layoutY="64.0" prefHeight="17.0" prefWidth="133.0" text="Įmonės kontaktai :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="userNameLabel" layoutX="183.0" layoutY="16.0" prefHeight="20.0" prefWidth="248.0" text="&lt;user name&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="fullUserNameLabel" layoutX="183.0" layoutY="38.0" prefHeight="20.0" prefWidth="248.0" text="&lt;user full name&gt;">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="userContactsLabel" alignment="TOP_LEFT" contentDisplay="CENTER" layoutX="183.0" layoutY="64.0" prefHeight="82.0" prefWidth="248.0" text="&lt;user contacts&gt;" wrapText="true">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="47.0" layoutY="155.0" text="Projektų vadovas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="projectsOwnerListView" layoutX="16.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" />
+      <Label layoutX="274.0" layoutY="155.0" text="Projektų darbuotojas :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <ListView fx:id="projectsWorkerListView" layoutX="236.0" layoutY="186.0" prefHeight="200.0" prefWidth="200.0" />
+   </children>
+</AnchorPane>
