@@ -61,6 +61,8 @@ public class MainController implements Initializable
     private Tab workersTab;
     @FXML
     private Button addWorkerButton;
+    @FXML
+    private Button removeWorkerButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -71,6 +73,7 @@ public class MainController implements Initializable
         this.taskViewerButton.setVisible(false);
         this.taskRemoverButton.setVisible(false);
         this.addWorkerButton.setVisible(false);
+        this.removeWorkerButton.setVisible(false);
 
         this.tasksListView.setItems(FXCollections.observableArrayList());
         this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -332,6 +335,7 @@ public class MainController implements Initializable
             if (getSelectedTaskName() == null)
             {
                 this.addWorkerButton.setVisible(false);
+                this.removeWorkerButton.setVisible(false);
             }
             else
             {
@@ -346,6 +350,7 @@ public class MainController implements Initializable
         this.taskViewerButton.setVisible(value);
 
         this.addWorkerButton.setVisible(!value);
+        this.removeWorkerButton.setVisible(!value);
     }
 
     @FXML
@@ -359,5 +364,35 @@ public class MainController implements Initializable
         {
             ex.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onRemoveWorker(ActionEvent event)
+    {
+        String selectedWorkerName = this.workersListView.getSelectionModel().getSelectedItem();
+        CProject workingProject = this.eventHandler.getWorkingProject();
+        
+        if(selectedWorkerName == null)
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_WORKER_NOT_SELECTED);
+            return;
+        }
+        else if (workingProject == null)
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
+            return;
+        }
+        
+        CDataBaseController dbController = this.eventHandler.getDataBaseController();
+        
+        if(dbController.removeWorkerFromProject(workingProject, selectedWorkerName))
+        {
+            this.eventHandler.handleInfo(CEventHandler.eInfoType.INFO_WORKER_REMOVED_FROM_PROJECT, selectedWorkerName);
+            this.workersListView.getItems().remove(selectedWorkerName);
+        }
+        else
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_UNKNOWN);
+        } 
     }
 }
