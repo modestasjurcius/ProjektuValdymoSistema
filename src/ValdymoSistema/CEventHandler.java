@@ -23,6 +23,7 @@ import org.json.simple.parser.ParseException;
 
 public class CEventHandler
 {
+
     private CProject workingProject;
     private CDataBaseController dataBaseController;
     private CUser currentUser;
@@ -38,6 +39,7 @@ public class CEventHandler
         ERROR_TOO_LONG_INPUT,
         ERROR_TASK_NOT_SELECTED,
         ERROR_COMMENT_NOT_SELECTED,
+        ERROR_WORKER_NOT_SELECTED,
         COUNT
     }
 
@@ -117,6 +119,9 @@ public class CEventHandler
                 break;
             case ERROR_COMMENT_NOT_SELECTED:
                 message = "Nepasirinktas joks komentaras !";
+                break;
+            case ERROR_WORKER_NOT_SELECTED:
+                message = "Nepasirinktas joks darbuotojas !";
                 break;
 
             default:
@@ -254,19 +259,18 @@ public class CEventHandler
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Project handling methods
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-    
     public boolean createProject(String projectName)
     {
         CProject project = new CProject();
         project.setProjectName(projectName);
-        
-        if(this.currentUser != null)
+
+        if (this.currentUser != null)
         {
-           this.dataBaseController.createProject(this.currentUser, projectName, projectName + ".json"); 
+            this.dataBaseController.createProject(this.currentUser, projectName, projectName + ".json");
         }
-        
+
         onWorkingProjectChange(project);
-        
+
         exportWorkingProject();
 
         print("\n-- Projektas pavadinimu : " + projectName + " - Sekmingai sukurtas!");
@@ -286,7 +290,7 @@ public class CEventHandler
         if (project.importData(projectFile))
         {
             this.dataBaseController.setProjectOwner(project);
-            
+
             onWorkingProjectChange(project);
 
             print("\n Projektas sekmingai importuotas !\n");
@@ -300,13 +304,13 @@ public class CEventHandler
     private void onWorkingProjectChange(CProject project)
     {
         this.workingProject = project;
-        
+
         MainController controller = getMainController();
 
         controller.setWorkingProjectName(project.getProjectName());
 
         controller.refreshTasksListView();
-        
+
         controller.fillProjectWorkersList();
     }
 
@@ -325,7 +329,7 @@ public class CEventHandler
 
         return this.workingProject.getProjectSaveFile();
     }
-    
+
     public CProject getWorkingProject()
     {
         return this.workingProject;
@@ -349,11 +353,10 @@ public class CEventHandler
     {
         //this.savedProjectList.put(this.workingProject.getProjectName(), this.workingProject.getProjectSaveFile());
     }
-    
+
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Utils
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
-
     public CTask getTaskByName(String taskName)
     {
         return this.workingProject.getTaskByName(taskName);
@@ -371,31 +374,31 @@ public class CEventHandler
 
     public Map getSavedProjects(boolean workingProjects, boolean owningProjects)
     {
-        if(this.currentUser != null)
+        if (this.currentUser != null)
         {
-           return this.dataBaseController.getSavedProjects(this.currentUser, workingProjects, owningProjects); 
+            return this.dataBaseController.getSavedProjects(this.currentUser, workingProjects, owningProjects);
         }
-        
+
         return new Hashtable<>();
     }
-    
+
     public CDataBaseController getDataBaseController()
     {
         return this.dataBaseController;
     }
-    
+
     public CUser getCurrentUser()
     {
         return this.currentUser;
     }
-    
+
     public void setCurrentUser(CUser user)
     {
         this.currentUser = user;
-        
+
         Main.getMainController().setUserName(this.currentUser.getUserName());
     }
-    
+
     private void print(String value)
     {
         System.out.println(value);
