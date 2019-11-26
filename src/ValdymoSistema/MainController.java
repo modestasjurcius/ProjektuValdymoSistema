@@ -63,6 +63,8 @@ public class MainController implements Initializable
     private Button addWorkerButton;
     @FXML
     private Button removeWorkerButton;
+    @FXML
+    private Button checkWorkerButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -70,10 +72,8 @@ public class MainController implements Initializable
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
         this.workingProjectName.setText("Nepasirinktas");
 
-        this.taskViewerButton.setVisible(false);
-        this.taskRemoverButton.setVisible(false);
-        this.addWorkerButton.setVisible(false);
-        this.removeWorkerButton.setVisible(false);
+        enableTaskViewButtons(false);
+        enableUserViewButtons(false);
 
         this.tasksListView.setItems(FXCollections.observableArrayList());
         this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -92,6 +92,19 @@ public class MainController implements Initializable
             }
         });
 
+    }
+
+    private void enableTaskViewButtons(boolean enable)
+    {
+        this.taskViewerButton.setVisible(enable);
+        this.taskRemoverButton.setVisible(enable);
+    }
+
+    private void enableUserViewButtons(boolean enable)
+    {
+        this.addWorkerButton.setVisible(enable);
+        this.removeWorkerButton.setVisible(enable);
+        this.checkWorkerButton.setVisible(enable);
     }
 
     @FXML
@@ -328,29 +341,25 @@ public class MainController implements Initializable
     {
         if (this.workersTab.isSelected() && this.eventHandler.getWorkingProject() != null)
         {
-            setTabButtonsVisibility(false);
+            enableButtonsOnTabChange(false);
         }
         else
         {
             if (getSelectedTaskName() == null)
             {
-                this.addWorkerButton.setVisible(false);
-                this.removeWorkerButton.setVisible(false);
+                enableUserViewButtons(false);
             }
             else
             {
-                setTabButtonsVisibility(true);
+                enableButtonsOnTabChange(true);
             }
         }
     }
 
-    private void setTabButtonsVisibility(boolean value)
-    {
-        this.taskRemoverButton.setVisible(value);
-        this.taskViewerButton.setVisible(value);
-
-        this.addWorkerButton.setVisible(!value);
-        this.removeWorkerButton.setVisible(!value);
+    private void enableButtonsOnTabChange(boolean value)
+    {      
+        enableTaskViewButtons(value);
+        enableUserViewButtons(!value);
     }
 
     @FXML
@@ -371,8 +380,8 @@ public class MainController implements Initializable
     {
         String selectedWorkerName = this.workersListView.getSelectionModel().getSelectedItem();
         CProject workingProject = this.eventHandler.getWorkingProject();
-        
-        if(selectedWorkerName == null)
+
+        if (selectedWorkerName == null)
         {
             this.eventHandler.handleError(eErrorCode.ERROR_WORKER_NOT_SELECTED);
             return;
@@ -382,10 +391,10 @@ public class MainController implements Initializable
             this.eventHandler.handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
             return;
         }
-        
+
         CDataBaseController dbController = this.eventHandler.getDataBaseController();
-        
-        if(dbController.removeWorkerFromProject(workingProject, selectedWorkerName))
+
+        if (dbController.removeWorkerFromProject(workingProject, selectedWorkerName))
         {
             this.eventHandler.handleInfo(CEventHandler.eInfoType.INFO_WORKER_REMOVED_FROM_PROJECT, selectedWorkerName);
             this.workersListView.getItems().remove(selectedWorkerName);
@@ -393,6 +402,16 @@ public class MainController implements Initializable
         else
         {
             this.eventHandler.handleError(eErrorCode.ERROR_UNKNOWN);
-        } 
+        }
+    }
+
+    @FXML
+    private void onLogOut(ActionEvent event)
+    {
+    }
+
+    @FXML
+    private void onCheckWorker(ActionEvent event)
+    {
     }
 }
