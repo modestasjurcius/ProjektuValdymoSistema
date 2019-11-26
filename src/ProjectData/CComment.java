@@ -18,12 +18,10 @@ import org.json.simple.JSONObject;
 public class CComment
 {
     private CEventHandler eventHandler;
-    private CDataBaseController dbController;
     private ArrayList<String> attachedFilesPaths;
     private String comment;
     private int id;
     private int authorId;
-    private String authorName;
     
     private Date dateOfComment;
     private String dateString;
@@ -41,7 +39,6 @@ public class CComment
         this.dateString = formatter.format(this.dateOfComment); 
         
         this.eventHandler = Main.getEventHandler();
-        this.dbController = this.eventHandler.getDataBaseController();
         CUser author = this.eventHandler.getCurrentUser();
         
         this.authorId  = author.getId();
