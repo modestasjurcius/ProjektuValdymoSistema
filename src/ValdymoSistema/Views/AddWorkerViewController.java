@@ -104,6 +104,7 @@ public class AddWorkerViewController implements Initializable
             {
                 this.eventHandler.handleInfo(CEventHandler.eInfoType.INFO_WORKER_ADDED_TO_PROJECT, selectedWorkerName);
                 this.freeWorkersListView.getItems().remove(selectedWorkerName);
+                Main.getMainController().fillProjectWorkersList();
             }
             else
             {
