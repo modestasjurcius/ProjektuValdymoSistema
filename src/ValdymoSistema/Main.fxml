@@ -29,8 +29,8 @@
                   <Blend />
                </effect>
             </Button>
-            <Button mnemonicParsing="false" onAction="#createTaskAction" prefHeight="40.0" prefWidth="207.0" text="Sukurti užduotį" />
             <Button mnemonicParsing="false" onAction="#exportPojectData" prefHeight="40.0" prefWidth="207.0" text="Eksportuoti projektą" />
+            <Button mnemonicParsing="false" onAction="#createTaskAction" prefHeight="40.0" prefWidth="207.0" text="Sukurti užduotį" />
             <Button mnemonicParsing="false" onAction="#onLogOut" prefHeight="40.0" prefWidth="207.0" text="Atsijungti" />
          </children>
       </FlowPane>
