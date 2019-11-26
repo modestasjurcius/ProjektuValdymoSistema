@@ -7,6 +7,7 @@ package ValdymoSistema;
 
 import ProjectData.CProject;
 import ProjectData.CTask;
+import UserData.CUser;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.Views.ProjectImporterDialogController;
 import ValdymoSistema.Views.UserViewerController;
@@ -323,6 +324,11 @@ public class MainController implements Initializable
     @FXML
     private void onCheckUser(ActionEvent event)
     {
+        openUserViewer(this.eventHandler.getCurrentUser());
+    }
+    
+    private void openUserViewer(CUser user)
+    {
         try
         {
             File f = new File("src/ValdymoSistema/Views/UserViewer.fxml");
@@ -332,7 +338,7 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
 
-            fxmlLoader.<UserViewerController>getController().setUser(this.eventHandler.getCurrentUser());
+            fxmlLoader.<UserViewerController>getController().setUser(user);
 
             stage.show();
         }
@@ -437,6 +443,26 @@ public class MainController implements Initializable
     @FXML
     private void onCheckWorker(ActionEvent event)
     {
+        String selectedWorkerName = this.workersListView.getSelectionModel().getSelectedItem();
+        
+        if(selectedWorkerName == null)
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_WORKER_NOT_SELECTED);
+            return;
+        }
+        
+        CDataBaseController dbController = this.eventHandler.getDataBaseController();
+        CUser worker = dbController.getUserByName(selectedWorkerName);
+        
+        if(worker == null)
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_OBJECT_NOT_FOUND, selectedWorkerName);
+            return;
+        }
+        else
+        {
+           openUserViewer(worker);
+        }
     }
     
     private void close()
