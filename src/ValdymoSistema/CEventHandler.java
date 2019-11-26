@@ -60,6 +60,20 @@ public class CEventHandler
         this.dataBaseController = new CDataBaseController();
         this.currentUser = null;
     }
+    
+    private void terminate()
+    {
+        this.dataBaseController.onLogOut();
+        
+        this.workingProject = null;
+        this.dataBaseController = null;
+        this.currentUser = null;
+    }
+    
+    public void onLogOut()
+    {
+        terminate();
+    }
 
     ///--------<<<<<<<<<<<<<<<<<<<<<<<<
     ///-------- Event handling methods
