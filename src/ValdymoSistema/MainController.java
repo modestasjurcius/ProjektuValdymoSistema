@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -53,6 +55,12 @@ public class MainController implements Initializable
     private Label userNameLabel;
     @FXML
     private ListView<String> workersListView;
+    @FXML
+    private Tab tasksTab;
+    @FXML
+    private Tab workersTab;
+    @FXML
+    private Button addWorkerButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -62,6 +70,7 @@ public class MainController implements Initializable
 
         this.taskViewerButton.setVisible(false);
         this.taskRemoverButton.setVisible(false);
+        this.addWorkerButton.setVisible(false);
 
         this.tasksListView.setItems(FXCollections.observableArrayList());
         this.tasksListView.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -107,7 +116,7 @@ public class MainController implements Initializable
             Parent root1 = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
-            
+
             Map savedProjects = this.eventHandler.getSavedProjects(true, true);
 
             if (!savedProjects.isEmpty())
@@ -193,17 +202,17 @@ public class MainController implements Initializable
             this.tasksListView.getItems().add(task.getTaskName());
         }
     }
-    
+
     public void fillProjectWorkersList()
     {
         CProject proj = this.eventHandler.getWorkingProject();
-        if(proj == null)
+        if (proj == null)
         {
             return;
         }
-        
+
         ObservableList<String> projectWorkers = this.eventHandler.getDataBaseController().getProjectWorkers(proj);
-        
+
         this.workersListView.setItems(projectWorkers);
     }
 
@@ -305,9 +314,50 @@ public class MainController implements Initializable
             e.printStackTrace();
         }
     }
-    
+
     public void setUserName(String name)
     {
         this.userNameLabel.setText(name);
+    }
+
+    @FXML
+    private void onSelectionChanged(Event event)
+    {
+        if (this.workersTab.isSelected() && this.eventHandler.getWorkingProject() != null)
+        {
+            setTabButtonsVisibility(false);
+        }
+        else
+        {
+            if (getSelectedTaskName() == null)
+            {
+                this.addWorkerButton.setVisible(false);
+            }
+            else
+            {
+                setTabButtonsVisibility(true);
+            }
+        }
+    }
+
+    private void setTabButtonsVisibility(boolean value)
+    {
+        this.taskRemoverButton.setVisible(value);
+        this.taskViewerButton.setVisible(value);
+
+        this.addWorkerButton.setVisible(!value);
+    }
+
+    @FXML
+    private void onAddWorker(ActionEvent event)
+    {
+        try
+        {
+            openView("src/ValdymoSistema/Views/AddWorkerView.fxml");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 }
