@@ -418,4 +418,72 @@ public class CDataBaseController
         
         return allWorkersList;
     }
+    
+    public boolean addWorkerToProject(CProject project, String workerName)
+    {
+       try
+       {
+           CUser worker = getUserByName(workerName);
+           int project_id = getProjectIdByName(project.getProjectName());
+           
+           if(worker == null || project_id < 0)
+           {
+               return false;
+           }
+           
+           Connection conn = getDBConnection();
+           String sql =  "INSERT INTO projects_workers VALUES (?, ?)";
+           PreparedStatement prep = conn.prepareStatement(sql);
+           
+           prep.setInt(1, project_id);
+           prep.setInt(2, worker.getId());
+           
+           prep.executeUpdate();
+           
+           conn.close();
+           prep.close();
+           return true;
+       }
+       catch (Exception ex)
+       {
+           ex.printStackTrace();
+       }
+       
+       return false;
+    }
+    
+    private CUser getUserByName(String name)
+    {
+        CUser user = null;
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT * FROM users WHERE login = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            
+            prep.setString(1, name);
+            
+            ResultSet rs = prep.executeQuery();
+            
+            while (rs.next())
+            {
+                int id = rs.getInt("id");
+                boolean isSingleUser = rs.getByte("is_single_user") != 0;
+                String fullName = rs.getString("full_user_name");
+                String contacts = rs.getString("user_contact");
+                
+                user = new CUser(name, id, isSingleUser, fullName, contacts);
+            }
+            
+            conn.close();
+            prep.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        
+        return user;
+    }
 }
