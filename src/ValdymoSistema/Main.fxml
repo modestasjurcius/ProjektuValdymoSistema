@@ -56,13 +56,14 @@
             <Label fx:id="userNameLabel" layoutX="14.0" layoutY="91.0" prefHeight="17.0" prefWidth="135.0" text="Sample name" />
             <Button layoutX="11.0" layoutY="116.0" mnemonicParsing="false" onAction="#onCheckUser" prefHeight="25.0" prefWidth="146.0" text="Peržiūrėti vartotoją" />
             <Separator layoutY="161.0" prefWidth="164.0" />
+            <Button fx:id="addWorkerButton" layoutX="12.0" layoutY="178.0" mnemonicParsing="false" onAction="#onAddWorker" prefHeight="40.0" prefWidth="144.0" text="Pridėti darbuotoją" />
          </children>
       </AnchorPane>
    </right>
    <center>
       <TabPane fx:id="projectInfoTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="Užduotys">
+          <Tab fx:id="tasksTab" text="Užduotys">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -71,7 +72,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Darbuotojai">
+          <Tab fx:id="workersTab" onSelectionChanged="#onSelectionChanged" text="Darbuotojai">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
