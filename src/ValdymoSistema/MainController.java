@@ -42,8 +42,6 @@ public class MainController implements Initializable
     @FXML
     private Button createProjectButton;
     @FXML
-    private Label workingProjectName;
-    @FXML
     private ListView<String> tasksListView;
     @FXML
     private TabPane projectInfoTabPane;
@@ -65,12 +63,14 @@ public class MainController implements Initializable
     private Button removeWorkerButton;
     @FXML
     private Button checkWorkerButton;
+    @FXML
+    private Label workingProjectNameLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         this.eventHandler = ValdymoSistema.Main.getEventHandler();
-        this.workingProjectName.setText("Nepasirinktas");
+        this.workingProjectNameLabel.setText("Nepasirinktas");
 
         enableTaskViewButtons(false);
         enableUserViewButtons(false);
@@ -92,6 +92,12 @@ public class MainController implements Initializable
             }
         });
 
+    }
+
+    private void terminate()
+    {
+        clearTaskList();
+        clearWorkersList();
     }
 
     private void enableTaskViewButtons(boolean enable)
@@ -186,7 +192,7 @@ public class MainController implements Initializable
 
     public void setWorkingProjectName(String name)
     {
-        this.workingProjectName.setText(name);
+        this.workingProjectNameLabel.setText(name);
     }
 
     public void fillTasksList(ObservableList<String> list)
@@ -207,6 +213,11 @@ public class MainController implements Initializable
     public void clearTaskList()
     {
         this.tasksListView.getItems().clear();
+    }
+
+    private void clearWorkersList()
+    {
+        this.workersListView.getItems().clear();
     }
 
     public void refreshTasksListView()
@@ -357,7 +368,7 @@ public class MainController implements Initializable
     }
 
     private void enableButtonsOnTabChange(boolean value)
-    {      
+    {
         enableTaskViewButtons(value);
         enableUserViewButtons(!value);
     }
@@ -408,10 +419,29 @@ public class MainController implements Initializable
     @FXML
     private void onLogOut(ActionEvent event)
     {
+        this.eventHandler.onLogOut();
+
+        terminate();
+
+        try
+        {
+            close();
+            Main.logOut();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     @FXML
     private void onCheckWorker(ActionEvent event)
     {
+    }
+    
+    private void close()
+    {
+        Stage stage = (Stage) this.addWorkerButton.getScene().getWindow();
+        stage.close();
     }
 }
