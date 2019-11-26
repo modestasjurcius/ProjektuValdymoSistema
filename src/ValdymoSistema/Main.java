@@ -17,7 +17,7 @@ import org.json.simple.parser.ParseException;
 
 public class Main extends Application
 {
-
+    private static Stage primStage;
     private static CEventHandler eventHandler;
     private static MainController mainController;
 
@@ -34,6 +34,8 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage) throws IOException
     {
+        primStage = primaryStage;
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -48,16 +50,19 @@ public class Main extends Application
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/LoginView.fxml"));
             fxmlLoader.setLocation(f.toURI().toURL());
             Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root1));
-            stage.show();
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root1));
+            loginStage.show();
             
-            stage.setOnHidden(new EventHandler<WindowEvent>()
+            loginStage.setOnHidden(new EventHandler<WindowEvent>()
             {
                 @Override
                 public void handle(WindowEvent event)
                 {
-                    primaryStage.show();
+                    if(eventHandler.getCurrentUser() != null)
+                    {
+                        primaryStage.show();  
+                    }
                 }
             });
         }
@@ -71,5 +76,50 @@ public class Main extends Application
     {
         eventHandler = new CEventHandler();
         launch(args);
+    }
+    
+    public static void logOut() throws IOException, FileNotFoundException, ParseException
+    {
+        eventHandler = new CEventHandler();
+        restart(primStage);
+    }
+    
+    public static void restart(Stage primaryStage) throws IOException
+    {
+
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("Main.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+
+        primaryStage.setScene(scene);
+
+        mainController = loader.<MainController>getController();
+
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/LoginView.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getClassLoader().getResource("src/ValdymoSistema/Views/LoginView.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage loginStage = new Stage();
+            loginStage.setScene(new Scene(root1));
+            loginStage.show();
+            
+            loginStage.setOnHidden(new EventHandler<WindowEvent>()
+            {
+                @Override
+                public void handle(WindowEvent event)
+                {
+                    if(eventHandler.getCurrentUser() != null)
+                    {
+                        primaryStage.show();  
+                    }
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
