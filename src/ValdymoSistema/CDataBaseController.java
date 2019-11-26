@@ -25,6 +25,21 @@ public class CDataBaseController
 
     public CDataBaseController()
     {
+        this.db_url = "jdbc:mysql://localhost:3306/valdymosistema";
+        this.user = "root";
+        this.pass = "root";
+    }
+
+    private void terminate()
+    {
+        this.db_url = null;
+        this.user = null;
+        this.pass = null;
+    }
+
+    public void onLogOut()
+    {
+        terminate();
     }
 
     public CUser getUser(String login, String pass)
@@ -471,12 +486,12 @@ public class CDataBaseController
 
             prep.setInt(1, project_id);
             prep.setInt(2, worker.getId());
-            
+
             prep.executeUpdate();
-            
+
             conn.close();
             prep.close();
-            
+
             return true;
         }
         catch (Exception ex)
