@@ -222,6 +222,11 @@ public class MainController implements Initializable
     @FXML
     private void onViewTask(ActionEvent event) throws IOException
     {
+        if (getSelectedTaskName() == null)
+        {
+            this.eventHandler.handleError(CEventHandler.eErrorCode.ERROR_TASK_NOT_SELECTED);
+            return;
+        }
         openTaskViewer();
     }
 
