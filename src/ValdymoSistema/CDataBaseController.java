@@ -24,7 +24,8 @@ public class CDataBaseController
     private String pass = "root";
 
     public CDataBaseController()
-    {}
+    {
+    }
 
     public CUser getUser(String login, String pass)
     {
@@ -75,24 +76,24 @@ public class CDataBaseController
             return null;
         }
     }
-    
+
     private ObservableList<String> getAllUserList()
     {
         ObservableList list = FXCollections.observableArrayList();
-        
+
         try
         {
             Connection conn = getDBConnection();
             Statement stat = conn.createStatement();
             String sql = "SELECT id, login FROM users";
             ResultSet rs = stat.executeQuery(sql);
-            
-            while(rs.next())
+
+            while (rs.next())
             {
                 String name = rs.getString("login");
                 list.add(name);
             }
-            
+
             conn.close();
             stat.close();
             rs.close();
@@ -101,7 +102,7 @@ public class CDataBaseController
         {
             ex.printStackTrace();
         }
-        
+
         return list;
     }
 
@@ -373,7 +374,7 @@ public class CDataBaseController
             ex.printStackTrace();
         }
     }
-    
+
     public void setProjectOwner(CProject proj)
     {
         try
@@ -381,21 +382,21 @@ public class CDataBaseController
             Connection conn = getDBConnection();
             String sql = "SELECT project_owner_id FROM projects WHERE project_name = ?";
             PreparedStatement prep = conn.prepareStatement(sql);
-            
+
             prep.setString(1, proj.getProjectName());
-            
+
             ResultSet rs = prep.executeQuery();
-            
-            if(rs.next())
+
+            if (rs.next())
             {
                 int owner_id = rs.getInt("project_owner_id");
                 CUser owner = getUserById(owner_id);
-                if(owner != null)
+                if (owner != null)
                 {
                     proj.setOwner(owner);
                 }
             }
-            
+
             conn.close();
             prep.close();
             rs.close();
@@ -405,53 +406,86 @@ public class CDataBaseController
             ex.printStackTrace();
         }
     }
-    
+
     public ObservableList<String> getFreeWorkersForProject(CProject project)
     {
         ObservableList<String> projectWorkersList = getProjectWorkers(project);
         ObservableList<String> allWorkersList = getAllUserList();
-        
+
         String projectOwnerName = project.getOwner().getUserName();
-        
+
         allWorkersList.removeAll(projectWorkersList);
         allWorkersList.remove(projectOwnerName);
-        
+
         return allWorkersList;
     }
-    
+
     public boolean addWorkerToProject(CProject project, String workerName)
     {
-       try
-       {
-           CUser worker = getUserByName(workerName);
-           int project_id = getProjectIdByName(project.getProjectName());
-           
-           if(worker == null || project_id < 0)
-           {
-               return false;
-           }
-           
-           Connection conn = getDBConnection();
-           String sql =  "INSERT INTO projects_workers VALUES (?, ?)";
-           PreparedStatement prep = conn.prepareStatement(sql);
-           
-           prep.setInt(1, project_id);
-           prep.setInt(2, worker.getId());
-           
-           prep.executeUpdate();
-           
-           conn.close();
-           prep.close();
-           return true;
-       }
-       catch (Exception ex)
-       {
-           ex.printStackTrace();
-       }
-       
-       return false;
+        try
+        {
+            CUser worker = getUserByName(workerName);
+            int project_id = getProjectIdByName(project.getProjectName());
+
+            if (worker == null || project_id < 0)
+            {
+                return false;
+            }
+
+            Connection conn = getDBConnection();
+            String sql = "INSERT INTO projects_workers VALUES (?, ?)";
+            PreparedStatement prep = conn.prepareStatement(sql);
+
+            prep.setInt(1, project_id);
+            prep.setInt(2, worker.getId());
+
+            prep.executeUpdate();
+
+            conn.close();
+            prep.close();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
     }
-    
+
+    public boolean removeWorkerFromProject(CProject project, String workerName)
+    {
+        try
+        {
+            CUser worker = getUserByName(workerName);
+            int project_id = getProjectIdByName(project.getProjectName());
+
+            if (worker == null || project_id < 0)
+            {
+                return false;
+            }
+
+            Connection conn = getDBConnection();
+            String sql = "DELETE FROM projects_workers WHERE project_id = ? AND user_id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+
+            prep.setInt(1, project_id);
+            prep.setInt(2, worker.getId());
+            
+            prep.executeUpdate();
+            
+            conn.close();
+            prep.close();
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     private CUser getUserByName(String name)
     {
         CUser user = null;
@@ -460,21 +494,21 @@ public class CDataBaseController
             Connection conn = getDBConnection();
             String sql = "SELECT * FROM users WHERE login = ?";
             PreparedStatement prep = conn.prepareStatement(sql);
-            
+
             prep.setString(1, name);
-            
+
             ResultSet rs = prep.executeQuery();
-            
+
             while (rs.next())
             {
                 int id = rs.getInt("id");
                 boolean isSingleUser = rs.getByte("is_single_user") != 0;
                 String fullName = rs.getString("full_user_name");
                 String contacts = rs.getString("user_contact");
-                
+
                 user = new CUser(name, id, isSingleUser, fullName, contacts);
             }
-            
+
             conn.close();
             prep.close();
             rs.close();
@@ -483,7 +517,7 @@ public class CDataBaseController
         {
             ex.printStackTrace();
         }
-        
+
         return user;
     }
 }
