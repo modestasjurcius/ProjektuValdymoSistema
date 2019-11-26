@@ -6,6 +6,7 @@
 package ValdymoSistema.Views;
 
 import ProjectData.CTask;
+import UserData.CUser;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.CEventHandler.eInfoType;
@@ -51,7 +52,8 @@ public class TaskCreatDialogController implements Initializable
             return;
         }
         
-        this.eventHandler.createTask(taskName, description, null);
+        CUser currentUser = this.eventHandler.getCurrentUser();
+        this.eventHandler.createTask(taskName, description, null, currentUser);
         
         if(this.parentTask != null)
         {
