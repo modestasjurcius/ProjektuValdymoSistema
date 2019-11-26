@@ -57,6 +57,7 @@ public class AddWorkerViewController implements Initializable
         
         if(selectedWorkerName == null)
         {
+            enableWorkerAdd(false);
             return;
         }
         else
@@ -105,6 +106,7 @@ public class AddWorkerViewController implements Initializable
                 this.eventHandler.handleInfo(CEventHandler.eInfoType.INFO_WORKER_ADDED_TO_PROJECT, selectedWorkerName);
                 this.freeWorkersListView.getItems().remove(selectedWorkerName);
                 Main.getMainController().fillProjectWorkersList();
+                onClickedOnFreeWorkersListView(null);
             }
             else
             {
