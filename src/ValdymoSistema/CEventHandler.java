@@ -391,11 +391,11 @@ public class CEventHandler
         return this.workingProject != null;
     }
 
-    public Map getSavedProjects(boolean workingProjects, boolean owningProjects)
+    public Map getSavedProjects(CUser user, boolean workingProjects, boolean owningProjects)
     {
-        if (this.currentUser != null)
+        if (user != null)
         {
-            return this.dataBaseController.getSavedProjects(this.currentUser, workingProjects, owningProjects);
+            return this.dataBaseController.getSavedProjects(user, workingProjects, owningProjects);
         }
 
         return new Hashtable<>();
