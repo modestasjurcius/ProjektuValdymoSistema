@@ -232,7 +232,7 @@ public class CEventHandler
         }
     }
 
-    public CTask createTask(String name, String description, CTask parentTask)
+    public CTask createTask(String name, String description, CTask parentTask, CUser author)
     {
         if (!isWorkingProjectValid())
         {
@@ -241,17 +241,12 @@ public class CEventHandler
         }
 
         CTask task = new CTask();
-
-        print("\n-- Iveskite uzduoties pavadinima : ");
         task.setTaskName(name);
-
-        print("\n-- Iveskite uzduoties aprasyma : ");
         task.setTaskDescription(description);
+        task.setAuthorId(author.getId());
 
         int id = this.workingProject.getTaskCount();
         task.setTaskId(id);
-
-        print("\n-- Uzduotis sekmingai sukurta ir prideta prie darbinio projekto!\n\n");
 
         if (parentTask != null)
         {
