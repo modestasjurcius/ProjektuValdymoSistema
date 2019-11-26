@@ -4,7 +4,6 @@
 package ProjectData;
 
 import UserData.CUser;
-import ValdymoSistema.CDataBaseController;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.Main;
 import java.text.SimpleDateFormat;
