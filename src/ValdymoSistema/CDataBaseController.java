@@ -345,4 +345,36 @@ public class CDataBaseController
             ex.printStackTrace();
         }
     }
+    
+    public void setProjectOwner(CProject proj)
+    {
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "SELECT project_owner_id FROM projects WHERE project_name = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+            
+            prep.setString(1, proj.getProjectName());
+            
+            ResultSet rs = prep.executeQuery();
+            
+            if(rs.next())
+            {
+                int owner_id = rs.getInt("project_owner_id");
+                CUser owner = getUserById(owner_id);
+                if(owner != null)
+                {
+                    proj.setOwner(owner);
+                }
+            }
+            
+            conn.close();
+            prep.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }
