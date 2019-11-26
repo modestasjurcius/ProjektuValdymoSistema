@@ -40,6 +40,7 @@ public class CEventHandler
         ERROR_TASK_NOT_SELECTED,
         ERROR_COMMENT_NOT_SELECTED,
         ERROR_WORKER_NOT_SELECTED,
+        ERROR_CANNOT_REMOVE_SELF,
         COUNT
     }
 
@@ -138,6 +139,9 @@ public class CEventHandler
                 break;
             case ERROR_WORKER_NOT_SELECTED:
                 message = "Nepasirinktas joks darbuotojas !";
+                break;
+            case ERROR_CANNOT_REMOVE_SELF:
+                message = "Negalima panaikinti savęs iš projekto darbuotojų sąrašo!";
                 break;
 
             default:
@@ -290,7 +294,7 @@ public class CEventHandler
 
         onWorkingProjectChange(project);
 
-        exportWorkingProject();
+        exportWorkingProject(false);
 
         print("\n-- Projektas pavadinimu : " + projectName + " - Sekmingai sukurtas!");
         print("\n-- Darbinis projektas nustatytas i naujai sukurta projekta.\n\n");
@@ -354,7 +358,7 @@ public class CEventHandler
         return this.workingProject;
     }
 
-    public void exportWorkingProject()
+    public void exportWorkingProject(boolean showInfo)
     {
         if (!isWorkingProjectValid())
         {
@@ -364,8 +368,11 @@ public class CEventHandler
 
         saveWorkingProject();
         this.workingProject.exportData();
-
-        handleInfo(eInfoType.INFO_PROJECT_EXPORTED, this.workingProject.getProjectName());
+        
+        if(showInfo)
+        {
+           handleInfo(eInfoType.INFO_PROJECT_EXPORTED, this.workingProject.getProjectName()); 
+        }
     }
 
     public void saveWorkingProject()
