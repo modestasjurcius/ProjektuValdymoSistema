@@ -139,7 +139,7 @@ public class MainController implements Initializable
             Stage stage = new Stage();
             stage.setScene(new Scene(root1));
 
-            Map savedProjects = this.eventHandler.getSavedProjects(true, true);
+            Map savedProjects = this.eventHandler.getSavedProjects(this.eventHandler.getCurrentUser(), true, true);
 
             if (!savedProjects.isEmpty())
             {
