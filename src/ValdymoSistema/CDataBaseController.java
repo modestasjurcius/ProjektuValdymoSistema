@@ -535,4 +535,29 @@ public class CDataBaseController
 
         return user;
     }
+
+    public boolean updateUserInfo(int userId, String name, String fullName, String contacts)
+    {
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "UPDATE users SET login = ?, full_user_name = ?, user_contact = ? WHERE id = ?";
+            PreparedStatement prep = conn.prepareStatement(sql);
+
+            prep.setString(1, name);
+            prep.setString(2, fullName);
+            prep.setString(3, contacts);
+            prep.setInt(4, userId);
+
+            prep.executeUpdate();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
 }
