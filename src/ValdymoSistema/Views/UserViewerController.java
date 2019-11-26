@@ -60,8 +60,8 @@ public class UserViewerController implements Initializable
         
         CEventHandler eHandler = Main.getEventHandler();
         
-        Map workingProjects = eHandler.getSavedProjects(true, false);
-        Map owningProjects  = eHandler.getSavedProjects(false, true);
+        Map workingProjects = eHandler.getSavedProjects(user, true, false);
+        Map owningProjects  = eHandler.getSavedProjects(user, false, true);
         
         this.projectsOwnerListView.getItems().clear();
         this.projectsWorkerListView.getItems().clear();
