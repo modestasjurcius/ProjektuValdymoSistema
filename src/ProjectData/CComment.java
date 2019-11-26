@@ -102,32 +102,6 @@ public class CComment
         return this.dateString;
     }
     
-    public String generateCommentOutput()
-    {
-        String out = "";
-        
-        out += "\n~~Komentaro ID: " + this.id + "\n";
-        out += "~~Komentaras : " + this.comment + "\n";
-        out += "~~Data : " + this.dateString + "\n";
-        out += "~~Prisegti failai : ";
-        
-        if(this.attachedFilesPaths.isEmpty())
-        {
-            out += "Nera\n";
-        }
-        else
-        {
-            out += "\n";
-            for(Object obj : this.attachedFilesPaths)
-            {
-                String value = (String) obj;
-                out += obj + "\n";
-            }
-        }
-        
-        return out;
-    }
-    
     public void parse(JSONObject data)
     {     
         try
