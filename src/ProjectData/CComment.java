@@ -3,6 +3,10 @@
  */
 package ProjectData;
 
+import UserData.CUser;
+import ValdymoSistema.CDataBaseController;
+import ValdymoSistema.CEventHandler;
+import ValdymoSistema.Main;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,9 +17,13 @@ import org.json.simple.JSONObject;
 
 public class CComment
 {
+    private CEventHandler eventHandler;
+    private CDataBaseController dbController;
     private ArrayList<String> attachedFilesPaths;
     private String comment;
     private int id;
+    private int authorId;
+    private String authorName;
     
     private Date dateOfComment;
     private String dateString;
@@ -31,6 +39,12 @@ public class CComment
         
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateString = formatter.format(this.dateOfComment); 
+        
+        this.eventHandler = Main.getEventHandler();
+        this.dbController = this.eventHandler.getDataBaseController();
+        CUser author = this.eventHandler.getCurrentUser();
+        
+        this.authorId  = author.getId();
     }
 
     CComment()
@@ -46,6 +60,11 @@ public class CComment
     public void setId(int id)
     {
         this.id = id;
+    }
+    
+    public int getAuthorId()
+    {
+        return this.authorId;
     }
     
     public void setComment(String newComment)
@@ -106,6 +125,7 @@ public class CComment
     {     
         try
         {
+            this.authorId = ((Long) data.get("CommentAuthorId")).intValue();
             this.comment = (String) data.get("Comment");
             this.id = ((Long) data.get("ID")).intValue();
             setDate(new Date((long) data.get("Date")));
@@ -130,6 +150,7 @@ public class CComment
     {
         JSONObject data = new JSONObject();
         
+        data.put("CommentAuthorId", this.authorId);
         data.put("Comment", this.comment);
         data.put("ID", this.id);
         data.put("Date", this.dateOfComment.getTime());
