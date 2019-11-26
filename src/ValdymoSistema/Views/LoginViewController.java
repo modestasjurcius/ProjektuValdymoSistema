@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -40,6 +39,8 @@ public class LoginViewController implements Initializable
     @FXML
     private void onLogin(ActionEvent event)
     {
+        this.dbController = Main.getEventHandler().getDataBaseController();
+        
         String login = this.loginTextField.getText();
         String pass = this.passwordField.getText();
         
@@ -55,6 +56,8 @@ public class LoginViewController implements Initializable
             this.infoLabel.setText("Blogas vartotojo vardas arba slaptažodis!");
             this.infoLabel.setVisible(true);
         }
+        
+        clearFields();
     }
 
     @FXML
@@ -66,5 +69,11 @@ public class LoginViewController implements Initializable
     {
         Stage st = (Stage) this.infoLabel.getScene().getWindow();
         st.close();
+    }
+    
+    private void clearFields()
+    {
+        this.loginTextField.clear();
+        this.passwordField.clear();
     }
 }
