@@ -285,6 +285,8 @@ public class CEventHandler
 
         if (project.importData(projectFile))
         {
+            this.dataBaseController.setProjectOwner(project);
+            
             onWorkingProjectChange(project);
 
             print("\n Projektas sekmingai importuotas !\n");
