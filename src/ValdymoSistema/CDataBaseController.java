@@ -501,7 +501,7 @@ public class CDataBaseController
         return false;
     }
 
-    private CUser getUserByName(String name)
+    public CUser getUserByName(String name)
     {
         CUser user = null;
         try
