@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 
 public class UserViewerController implements Initializable
 {
+
     private CUser user;
     @FXML
     private Label singleUserNameLabel;
@@ -66,9 +67,14 @@ public class UserViewerController implements Initializable
         {
             return;
         }
-        
-        this.user = user;
 
+        this.user = user;
+        
+        updateInfo();
+    }
+    
+    private void updateInfo()
+    {
         this.userNameLabel.setText(this.user.getUserName());
         this.userContactsLabel.setText(this.user.getUserContacts());
         this.fullUserNameLabel.setText(this.user.getUserFullName());
@@ -76,7 +82,7 @@ public class UserViewerController implements Initializable
         setSingleUserViewMode(this.user.isSingleUser());
 
         CEventHandler eHandler = Main.getEventHandler();
-        
+
         determineCanEditUserInfo(eHandler, this.user);
 
         Map workingProjects = eHandler.getSavedProjects(this.user, true, false);
@@ -128,12 +134,12 @@ public class UserViewerController implements Initializable
             this.userNameTextField.setText(this.userNameLabel.getText());
         }
     }
-    
+
     private void determineCanEditUserInfo(CEventHandler eHandler, CUser user)
     {
         CUser loggedUser = eHandler.getCurrentUser();
-        
-        if(user != loggedUser)
+
+        if (user != loggedUser)
         {
             this.editUserInfoButton.setVisible(false);
         }
@@ -148,6 +154,61 @@ public class UserViewerController implements Initializable
     @FXML
     private void onConfirmEditUserInfo(ActionEvent event)
     {
+        CEventHandler eHandler = Main.getEventHandler();
+
+        String editedName = this.userNameTextField.getText();
+        String editedFullName = this.fullUserNameTextField.getText();
+        String editedContacts = this.userContactInfoTextArea.getText();
+
+        if (!determineEditInfoCorrection(editedName, editedFullName, editedContacts))
+        {
+            eHandler.handleError(CEventHandler.eErrorCode.ERROR_MISSING_INPUT);
+            return;
+        }
+
+        if (!determineIfEditedInfoIsSame(editedName, editedFullName, editedContacts))
+        {
+            CDataBaseController dbController = eHandler.getDataBaseController();
+            
+            int userId = this.user.getId();
+            boolean isSingleUser = this.user.isSingleUser();
+            
+            if(dbController.updateUserInfo(userId, editedName, editedFullName, editedContacts))
+            {
+                this.user = new CUser(editedName, userId, isSingleUser, editedFullName, editedContacts);
+                eHandler.setCurrentUser(this.user);
+                setUser(this.user);
+            }
+            else
+            {
+                eHandler.handleError(CEventHandler.eErrorCode.ERROR_UNKNOWN);
+            }
+        }
+        
         enableEditorMode(false);
+    }
+
+    private boolean determineEditInfoCorrection(String name, String fullName, String contacts)
+    {
+        boolean value = true;
+
+        value &= name.length() > 0 && name.length() < 51;
+        value &= fullName.length() > 0 && fullName.length() < 151;
+        value &= contacts.length() > 0 && contacts.length() < 101;
+
+        return value;
+    }
+
+    private boolean determineIfEditedInfoIsSame(String name, String fullName, String contacts)
+    {
+        boolean value;
+
+        boolean sameName = this.user.getUserName().equals(name);
+        boolean sameFullName = this.user.getUserFullName().equals(fullName);
+        boolean sameContacts = this.user.getUserContacts().equals(contacts);
+
+        value = sameName && sameFullName && sameContacts;
+
+        return value;
     }
 }
