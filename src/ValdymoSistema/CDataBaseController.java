@@ -317,7 +317,7 @@ public class CDataBaseController
         return project_id;
     }
 
-    private CUser getUserById(int id)
+    public CUser getUserById(int id)
     {
         try
         {
