@@ -50,6 +50,7 @@ public class CEventHandler
         INFO_TASK_CREATED,
         INFO_TASK_REMOVED,
         INFO_PROJECT_EXPORTED,
+        INFO_WORKER_ADDED_TO_PROJECT,
         COUNT
     }
 
@@ -178,6 +179,10 @@ public class CEventHandler
             case INFO_TASK_REMOVED:
                 message = "Užduotis pavadinimu : " + info
                         + " - sėkmingai panaikinta!";
+            case INFO_WORKER_ADDED_TO_PROJECT:
+                message = "Darbuotojas : " + info
+                        + "\n - sėkmingai pridėtas prie darbuotojų sąrašo!";
+                break;
 
             default:
                 break;
