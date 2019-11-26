@@ -24,8 +24,7 @@ public class CDataBaseController
     private String pass = "root";
 
     public CDataBaseController()
-    {
-    }
+    {}
 
     public CUser getUser(String login, String pass)
     {
@@ -75,6 +74,35 @@ public class CDataBaseController
             ex.printStackTrace();
             return null;
         }
+    }
+    
+    private ObservableList<String> getAllUserList()
+    {
+        ObservableList list = FXCollections.observableArrayList();
+        
+        try
+        {
+            Connection conn = getDBConnection();
+            Statement stat = conn.createStatement();
+            String sql = "SELECT id, login FROM users";
+            ResultSet rs = stat.executeQuery(sql);
+            
+            while(rs.next())
+            {
+                String name = rs.getString("login");
+                list.add(name);
+            }
+            
+            conn.close();
+            stat.close();
+            rs.close();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        
+        return list;
     }
 
     private Connection getDBConnection()
@@ -376,5 +404,18 @@ public class CDataBaseController
         {
             ex.printStackTrace();
         }
+    }
+    
+    public ObservableList<String> getFreeWorkersForProject(CProject project)
+    {
+        ObservableList<String> projectWorkersList = getProjectWorkers(project);
+        ObservableList<String> allWorkersList = getAllUserList();
+        
+        String projectOwnerName = project.getOwner().getUserName();
+        
+        allWorkersList.removeAll(projectWorkersList);
+        allWorkersList.remove(projectOwnerName);
+        
+        return allWorkersList;
     }
 }
