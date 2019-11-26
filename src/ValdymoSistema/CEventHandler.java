@@ -128,7 +128,7 @@ public class CEventHandler
                 break;
             case ERROR_TOO_LONG_INPUT:
                 message = "Į lauką(-us) įrašytas(-i) per ilgas(-i) kintamasis(-ieji)!\n"
-                        + "Leistinas kintamųjų ilgis : 15 simbolių";
+                        + "Leistinas kintamųjų ilgis : 50 simbolių";
                 break;
             case ERROR_TASK_NOT_SELECTED:
                 message = "Nepasirinkta jokia užduotis !";

@@ -46,7 +46,7 @@ public class TaskCreatDialogController implements Initializable
         String taskName = this.taskNameTextView.getText();
         String description = this.descriptionTextArea.getText();
         
-        if(taskName == null || taskName.length() > 15)
+        if(taskName == null || taskName.length() > 50)
         {
             this.eventHandler.handleError(eErrorCode.ERROR_TOO_LONG_INPUT);
             return;
