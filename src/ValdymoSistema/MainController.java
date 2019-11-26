@@ -408,6 +408,11 @@ public class MainController implements Initializable
             this.eventHandler.handleError(eErrorCode.ERROR_WORKING_PROJECT_INVALID);
             return;
         }
+        else if(selectedWorkerName.equals(this.eventHandler.getCurrentUser().getUserName()))
+        {
+            this.eventHandler.handleError(eErrorCode.ERROR_CANNOT_REMOVE_SELF);
+            return;
+        }
 
         CDataBaseController dbController = this.eventHandler.getDataBaseController();
 
@@ -425,6 +430,7 @@ public class MainController implements Initializable
     @FXML
     private void onLogOut(ActionEvent event)
     {
+        this.eventHandler.exportWorkingProject(false);
         this.eventHandler.onLogOut();
 
         terminate();
