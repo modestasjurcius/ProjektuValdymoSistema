@@ -45,6 +45,11 @@ public class CProject
         this.projectOwner = user;
     }
     
+    public CUser getOwner()
+    {
+        return this.projectOwner;
+    }
+    
     public void addWorker(CUser worker)
     {
         projectWorkers.add(worker);
