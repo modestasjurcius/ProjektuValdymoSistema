@@ -7,6 +7,8 @@ package ValdymoSistema.Views;
 
 import ProjectData.CComment;
 import ProjectData.CTask;
+import UserData.CUser;
+import ValdymoSistema.CDataBaseController;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.Main;
 import static ValdymoSistema.Main.getMainController;
@@ -107,6 +109,13 @@ public class TaskViewerController implements Initializable
         this.taskNameLabel.setText(this.taskName);
         this.completeLevelLabel.setText(String.valueOf(this.currentTask.getCompleteLevel()));
         this.descriptionLabel.setText(this.currentTask.getTaskDescription());
+        
+        CDataBaseController dbController = this.eventHandler.getDataBaseController();
+        CUser author = dbController.getUserById(this.currentTask.getAuthorId());
+        if(author != null)
+        {
+            this.authorLabel.setText(author.getUserFullName());
+        }
         
         if (this.currentTask.hasParentTask())
         {

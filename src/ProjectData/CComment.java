@@ -3,6 +3,9 @@
  */
 package ProjectData;
 
+import UserData.CUser;
+import ValdymoSistema.CEventHandler;
+import ValdymoSistema.Main;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -13,9 +16,11 @@ import org.json.simple.JSONObject;
 
 public class CComment
 {
+    private CEventHandler eventHandler;
     private ArrayList<String> attachedFilesPaths;
     private String comment;
     private int id;
+    private int authorId;
     
     private Date dateOfComment;
     private String dateString;
@@ -31,6 +36,11 @@ public class CComment
         
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.dateString = formatter.format(this.dateOfComment); 
+        
+        this.eventHandler = Main.getEventHandler();
+        CUser author = this.eventHandler.getCurrentUser();
+        
+        this.authorId  = author.getId();
     }
 
     CComment()
@@ -46,6 +56,11 @@ public class CComment
     public void setId(int id)
     {
         this.id = id;
+    }
+    
+    public int getAuthorId()
+    {
+        return this.authorId;
     }
     
     public void setComment(String newComment)
@@ -102,36 +117,11 @@ public class CComment
         return this.dateString;
     }
     
-    public String generateCommentOutput()
-    {
-        String out = "";
-        
-        out += "\n~~Komentaro ID: " + this.id + "\n";
-        out += "~~Komentaras : " + this.comment + "\n";
-        out += "~~Data : " + this.dateString + "\n";
-        out += "~~Prisegti failai : ";
-        
-        if(this.attachedFilesPaths.isEmpty())
-        {
-            out += "Nera\n";
-        }
-        else
-        {
-            out += "\n";
-            for(Object obj : this.attachedFilesPaths)
-            {
-                String value = (String) obj;
-                out += obj + "\n";
-            }
-        }
-        
-        return out;
-    }
-    
     public void parse(JSONObject data)
     {     
         try
         {
+            this.authorId = ((Long) data.get("CommentAuthorId")).intValue();
             this.comment = (String) data.get("Comment");
             this.id = ((Long) data.get("ID")).intValue();
             setDate(new Date((long) data.get("Date")));
@@ -156,6 +146,7 @@ public class CComment
     {
         JSONObject data = new JSONObject();
         
+        data.put("CommentAuthorId", this.authorId);
         data.put("Comment", this.comment);
         data.put("ID", this.id);
         data.put("Date", this.dateOfComment.getTime());

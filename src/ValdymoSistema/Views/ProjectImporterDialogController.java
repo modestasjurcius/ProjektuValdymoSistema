@@ -5,14 +5,12 @@
  */
 package ValdymoSistema.Views;
 
+import ValdymoSistema.CDataBaseController;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.Main;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,8 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.json.simple.parser.ParseException;
-
 
 public class ProjectImporterDialogController implements Initializable
 {
@@ -57,12 +53,10 @@ public class ProjectImporterDialogController implements Initializable
                     try
                     {
                         eventHandler.importProject(selectedProjectName);
-                    } catch (IOException ex)
+                    }
+                    catch (Exception ex)
                     {
-                        Logger.getLogger(ProjectImporterDialogController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ParseException ex)
-                    {
-                        Logger.getLogger(ProjectImporterDialogController.class.getName()).log(Level.SEVERE, null, ex);
+                        ex.printStackTrace();
                     }
 
                     eventHandler.handleInfo(CEventHandler.eInfoType.INFO_PROJECT_IMPORTED, selectedProjectName);
@@ -98,12 +92,12 @@ public class ProjectImporterDialogController implements Initializable
     {
         closeProjectImporter();
     }
-    
+
     public void setValidImportMode(boolean enable)
     {
         this.backActionButton.setVisible(!enable);
         this.noSavedProjectsLabel.setVisible(!enable);
-        
+
         this.savedProjectsListView.setVisible(enable);
         this.importProjectTitleLabel.setVisible(enable);
     }
