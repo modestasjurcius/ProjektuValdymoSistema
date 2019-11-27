@@ -13,6 +13,6 @@
          </font>
       </Label>
       <Button fx:id="closeButton" layoutX="125.0" layoutY="206.0" mnemonicParsing="false" onAction="#onErrorBackAction" prefHeight="30.0" prefWidth="150.0" text="Atgal" />
-      <Label fx:id="errorMessage" alignment="CENTER" layoutX="31.0" layoutY="59.0" prefHeight="132.0" prefWidth="338.0" text="Sample text" wrapText="true" />
+      <Label fx:id="errorMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="59.0" prefHeight="132.0" prefWidth="338.0" text="Sample text" wrapText="true" />
    </children>
 </AnchorPane>

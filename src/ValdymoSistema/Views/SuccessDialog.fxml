@@ -12,11 +12,7 @@
             <Font name="Calibri Bold" size="24.0" />
          </font>
       </Label>
-      <Label fx:id="messageTextField" alignment="CENTER" layoutX="23.0" layoutY="67.0" prefHeight="116.0" prefWidth="354.0" text="Sample text" wrapText="true">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
+      <Label fx:id="messageTextField" alignment="CENTER" contentDisplay="CENTER" layoutX="23.0" layoutY="67.0" prefHeight="116.0" prefWidth="354.0" text="Sample text" wrapText="true" />
       <Button fx:id="closeButton" layoutX="125.0" layoutY="187.0" mnemonicParsing="false" onAction="#onClose" prefHeight="30.0" prefWidth="150.0" text="Supratau" />
    </children>
 </AnchorPane>
