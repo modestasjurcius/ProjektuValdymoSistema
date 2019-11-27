@@ -1,13 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * FXML Controller class
+ *
+ * @author Modestas
  */
 package ValdymoSistema.Views;
 
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.CEventHandler.eErrorCode;
-import static ValdymoSistema.Main.getEventHandler;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -17,11 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Modestas
- */
+
 public class CreateProjectDialogController implements Initializable
 {
     private CEventHandler eventHandler;
@@ -30,9 +25,7 @@ public class CreateProjectDialogController implements Initializable
     private TextField projectNameTextField; 
     @FXML
     private Button closeButton;
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
@@ -49,7 +42,7 @@ public class CreateProjectDialogController implements Initializable
             this.eventHandler.handleError(eErrorCode.ERROR_MISSING_INPUT);
             return;
         }
-        else if(projectName.length() > 15)
+        else if(projectName.length() > 50)
         {
             this.eventHandler.handleError(eErrorCode.ERROR_TOO_LONG_INPUT);
             return;
