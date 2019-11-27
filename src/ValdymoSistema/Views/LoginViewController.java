@@ -8,11 +8,15 @@ package ValdymoSistema.Views;
 import UserData.CUser;
 import ValdymoSistema.CDataBaseController;
 import ValdymoSistema.Main;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -63,6 +67,20 @@ public class LoginViewController implements Initializable
     @FXML
     private void onRegister(ActionEvent event)
     {
+        try
+        {
+            File f = new File("src/ValdymoSistema/Views/RegisterView.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("src/ValdymoSistema/Views/RegisterView.fxml"));
+            fxmlLoader.setLocation(f.toURI().toURL());
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root1));
+            stage.show();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     
     private void close()
