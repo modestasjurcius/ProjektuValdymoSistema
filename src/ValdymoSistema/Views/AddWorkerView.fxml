@@ -16,7 +16,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Button layoutX="21.0" layoutY="356.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="30.0" prefWidth="130.0" text="Atšaukti" />
+      <Button layoutX="21.0" layoutY="356.0" mnemonicParsing="false" onAction="#onCancel" prefHeight="30.0" prefWidth="130.0" text="Atgal" />
       <Label layoutX="50.0" layoutY="27.0" text="Pasirinkite darbuotoją iš sąrašo :" />
    </children>
 </AnchorPane>
