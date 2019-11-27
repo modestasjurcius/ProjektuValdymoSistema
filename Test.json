@@ -2,6 +2,7 @@
     "Name": "Test",
     "Tasks": [
         {
+            "AuthorId": 1,
             "TaskName": "Uzduotis",
             "CompleteLevel": 60,
             "ID": 0,
@@ -9,6 +10,7 @@
             "ParentTask": "Tevine",
             "Comments": [
                 {
+                    "CommentAuthorId":1,
                     "Comment": "Komentaras trumpas",
                     "ID": 0,
                     "Date": 1598000754354,
@@ -18,6 +20,7 @@
                     ]
                 },
                 {
+                    "CommentAuthorId":3,
                     "Comment": "Komentaras trumpesnis",
                     "ID": 1,
                     "Date": 16900086343
@@ -25,6 +28,7 @@
             ]
         },
         {
+            "AuthorId": 1,
             "TaskName": "Tevine",
             "CompleteLevel": 10,
             "ID": 2,
