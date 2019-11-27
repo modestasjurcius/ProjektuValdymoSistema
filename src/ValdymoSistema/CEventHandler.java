@@ -41,6 +41,8 @@ public class CEventHandler
         ERROR_COMMENT_NOT_SELECTED,
         ERROR_WORKER_NOT_SELECTED,
         ERROR_CANNOT_REMOVE_SELF,
+        ERROR_PASSWORDS_DONT_MATCH,
+        ERROR_BAD_INPUT_ON_REGISTER,
         COUNT
     }
 
@@ -53,6 +55,7 @@ public class CEventHandler
         INFO_PROJECT_EXPORTED,
         INFO_WORKER_ADDED_TO_PROJECT,
         INFO_WORKER_REMOVED_FROM_PROJECT,
+        INFO_USER_REGISTERED,
         COUNT
     }
 
@@ -143,6 +146,14 @@ public class CEventHandler
             case ERROR_CANNOT_REMOVE_SELF:
                 message = "Negalima panaikinti savęs iš projekto darbuotojų sąrašo!";
                 break;
+            case ERROR_PASSWORDS_DONT_MATCH:
+                message = "Įrašyti slaptažodžiai nesutampa!";
+                break;
+            case ERROR_BAD_INPUT_ON_REGISTER:
+                message = "Ne visi laukai užpildyti, arba užpildyta per daug simbolių!"
+                        + "Maksimalus simbolių skaičius : slapyvardis - 50, slaptažodis - 50, "
+                        + "kontaktai - 100, pilnas vardas - 150";
+                break;
 
             default:
                 break;
@@ -205,6 +216,10 @@ public class CEventHandler
             case INFO_WORKER_REMOVED_FROM_PROJECT:
                 message = "Darbuotojas " + info
                         + "\n - sėkmingai panaikintas iš darbuotojų sąrašo!";
+                break;
+            case INFO_USER_REGISTERED:
+                message = "Vartotojas slapyvardžiu : " + info
+                        + " - sėkmingai sukurtas!\nGalite prisijungti.";
                 break;
 
             default:
