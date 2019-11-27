@@ -19,7 +19,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="noSavedProjectsLabel" layoutX="56.0" layoutY="103.0" prefHeight="37.0" prefWidth="339.0" text="Nerastas išsaugotų projektų failas, arba jis yra tuščias.">
+      <Label fx:id="noSavedProjectsLabel" layoutX="56.0" layoutY="103.0" prefHeight="51.0" prefWidth="339.0" text="Jūs neturite jokių išsaugotų projektų, arba nesate priskirtas darbuotoju prie kitų projektų." wrapText="true">
          <font>
             <Font size="14.0" />
          </font>

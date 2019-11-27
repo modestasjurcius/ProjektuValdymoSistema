@@ -6,6 +6,7 @@
 package ValdymoSistema.Views;
 
 import ProjectData.CTask;
+import UserData.CUser;
 import ValdymoSistema.CEventHandler;
 import ValdymoSistema.CEventHandler.eErrorCode;
 import ValdymoSistema.CEventHandler.eInfoType;
@@ -45,13 +46,14 @@ public class TaskCreatDialogController implements Initializable
         String taskName = this.taskNameTextView.getText();
         String description = this.descriptionTextArea.getText();
         
-        if(taskName == null || taskName.length() > 15)
+        if(taskName == null || taskName.length() > 50)
         {
             this.eventHandler.handleError(eErrorCode.ERROR_TOO_LONG_INPUT);
             return;
         }
         
-        this.eventHandler.createTask(taskName, description, null);
+        CUser currentUser = this.eventHandler.getCurrentUser();
+        this.eventHandler.createTask(taskName, description, null, currentUser);
         
         if(this.parentTask != null)
         {

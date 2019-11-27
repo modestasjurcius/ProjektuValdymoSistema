@@ -83,7 +83,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="authorLabel" layoutX="230.0" layoutY="29.0" text="&lt;author&gt;">
+      <Label fx:id="authorLabel" layoutX="224.0" layoutY="27.0" prefHeight="20.0" prefWidth="246.0" text="&lt;author&gt;">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

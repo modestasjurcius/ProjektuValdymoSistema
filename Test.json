@@ -1,0 +1,38 @@
+{
+    "Name": "Test",
+    "Tasks": [
+        {
+            "AuthorId": 1,
+            "TaskName": "Uzduotis",
+            "CompleteLevel": 60,
+            "ID": 0,
+            "Description": "Aprasymas uzduoties pavadinimu Uzduotis1",
+            "ParentTask": "Tevine",
+            "Comments": [
+                {
+                    "CommentAuthorId":1,
+                    "Comment": "Komentaras trumpas",
+                    "ID": 0,
+                    "Date": 1598000754354,
+                    "AttachedFiles": [
+                        "failas1.txt",
+                        "failas2.txt"
+                    ]
+                },
+                {
+                    "CommentAuthorId":3,
+                    "Comment": "Komentaras trumpesnis",
+                    "ID": 1,
+                    "Date": 16900086343
+                }
+            ]
+        },
+        {
+            "AuthorId": 1,
+            "TaskName": "Tevine",
+            "CompleteLevel": 10,
+            "ID": 2,
+            "Description": "Tevines aprasymas"
+        }
+    ]
+}

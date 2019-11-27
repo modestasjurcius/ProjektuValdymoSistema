@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 
 public class CTask
 {
-
     private CTask parentTask;
     private STaskInfo taskInfo;
 
@@ -131,12 +130,23 @@ public class CTask
     {
         return this.comments.size();
     }
+    
+    public int getAuthorId()
+    {
+        return this.taskInfo.authorId;
+    }
+    
+    public void setAuthorId(int id)
+    {
+        this.taskInfo.authorId = id;
+    }
 
     //=======================================
     public void parse(JSONObject data, ArrayList parentToChild)
     {
         try
         {
+            this.taskInfo.authorId = ((Long) data.get("AuthorId")).intValue();
             this.taskInfo.name = (String) data.get("TaskName");
             this.taskInfo.completeLevel = ((Long) data.get("CompleteLevel")).intValue();
             this.taskInfo.idNumber = ((Long) data.get("ID")).intValue();
@@ -169,7 +179,8 @@ public class CTask
     public JSONObject generateExportJson()
     {
         JSONObject data = new JSONObject();
-
+        
+        data.put("AuthorId", this.taskInfo.authorId);
         data.put("TaskName", this.taskInfo.name);
         data.put("CompleteLevel", this.taskInfo.completeLevel);
         data.put("ID", this.taskInfo.idNumber);
@@ -194,67 +205,5 @@ public class CTask
         }
 
         return data;
-    }
-
-    public String generateTaskInfoOutput()
-    {
-        String out = "";
-
-        out += "\n~~Pavadinimas : " + this.taskInfo.name + "\n";
-        out += "~~ID numeris : " + this.taskInfo.idNumber + "\n";
-        out += "~~Uzbaigtumo lygis : " + this.taskInfo.completeLevel + " %\n";
-        out += "~~Tevine uzduotis : ";
-
-        if (hasParentTask())
-        {
-            out += this.parentTask.getTaskName() + "\n";
-        }
-        else
-        {
-            out += "Nera\n";
-        }
-
-        out += "~~Vaikines uzduotys : ";
-
-        int childTasksCount = this.childTasks.size();
-        if (childTasksCount > 0)
-        {
-            for (int i = 0; i < childTasksCount; i++)
-            {
-                if (i > 0)
-                {
-                    out += ", ";
-                }
-
-                CTask childTask = (CTask) this.childTasks.get(i);
-                out += childTask.getTaskName();
-            }
-        }
-        else
-        {
-            out += "Nera";
-        }
-
-        out += "\n~~Aprasymas : " + this.taskInfo.taskDescription + "\n";
-        out += "~~Komentarai : ";
-
-        if (this.comments.isEmpty())
-        {
-            out += "Nera\n";
-        }
-        else
-        {
-            out += "\n";
-
-            for (Object obj : this.comments)
-            {
-                CComment com = (CComment) obj;
-                out += com.generateCommentOutput();
-            }
-        }
-
-        out += "\n";
-
-        return out;
     }
 }

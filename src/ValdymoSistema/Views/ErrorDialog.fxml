@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="281.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.ErrorDialogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ValdymoSistema.Views.ErrorDialogController">
    <children>
-      <Label layoutX="244.0" layoutY="14.0" text="Klaida !">
+      <Label layoutX="163.0" layoutY="14.0" text="Klaida !">
          <font>
-            <Font name="Calibri Bold" size="36.0" />
+            <Font name="Calibri Bold" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="closeButton" layoutX="206.0" layoutY="183.0" mnemonicParsing="false" onAction="#onErrorBackAction" prefHeight="57.0" prefWidth="190.0" text="Atgal" />
-      <Label fx:id="errorMessage" alignment="CENTER" layoutX="97.0" layoutY="78.0" prefHeight="73.0" prefWidth="409.0" text="Sample text" />
+      <Button fx:id="closeButton" layoutX="125.0" layoutY="206.0" mnemonicParsing="false" onAction="#onErrorBackAction" prefHeight="30.0" prefWidth="150.0" text="Atgal" />
+      <Label fx:id="errorMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="59.0" prefHeight="132.0" prefWidth="338.0" text="Sample text" wrapText="true" />
    </children>
 </AnchorPane>

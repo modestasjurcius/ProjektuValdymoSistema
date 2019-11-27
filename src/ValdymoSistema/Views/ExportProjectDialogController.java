@@ -35,7 +35,7 @@ public class ExportProjectDialogController implements Initializable
     @FXML
     private void confimProjectExport(ActionEvent event)
     {
-        this.eventHandler.exportWorkingProject();
+        this.eventHandler.exportWorkingProject(true);
         closeDialog();
     }
 
