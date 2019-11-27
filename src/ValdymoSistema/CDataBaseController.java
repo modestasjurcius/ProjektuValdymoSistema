@@ -551,7 +551,41 @@ public class CDataBaseController
 
             prep.executeUpdate();
 
+            conn.close();
+            prep.close();
+
             return true;
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean registerUser(String name, String pass, String fullName, String contacts, boolean singleUser)
+    {
+        try
+        {
+            Connection conn = getDBConnection();
+            String sql = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement prep = conn.prepareStatement(sql);
+
+            prep.setInt(1, 0); //user id is auto-increment
+            prep.setString(2, name);
+            prep.setString(3, pass);
+            prep.setByte(4, singleUser ? (byte) 0 : (byte) 1);
+            prep.setString(5, fullName);
+            prep.setString(6, contacts);
+
+            if (prep.executeUpdate() == 1)
+            {
+                conn.close();
+                prep.close();
+                
+                return true;
+            }
         }
         catch (Exception ex)
         {
